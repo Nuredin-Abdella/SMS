@@ -251,6 +251,56 @@ function createLocationKeyboard(userLang) {
     };
 }
 
+/**
+ * Create admin dashboard keyboard
+ */
+function createAdminDashboardKeyboard(userLang) {
+    const { getTranslation } = require('../config/languages');
+    
+    return {
+        keyboard: [
+            [
+                { text: getTranslation('admin_view_applications', userLang) },
+                { text: getTranslation('admin_view_users', userLang) }
+            ],
+            [
+                { text: getTranslation('admin_statistics', userLang) },
+                { text: getTranslation('admin_settings', userLang) }
+            ],
+            [
+                { text: getTranslation('admin_logout', userLang) }
+            ]
+        ],
+        resize_keyboard: true,
+        one_time_keyboard: false
+    };
+}
+
+/**
+ * Create admin application management keyboard
+ */
+function createAdminApplicationKeyboard(userLang) {
+    const { getTranslation } = require('../config/languages');
+    
+    return {
+        keyboard: [
+            [
+                { text: '✅ Approve' },
+                { text: '❌ Reject' }
+            ],
+            [
+                { text: '📝 Add Note' },
+                { text: '👤 View User' }
+            ],
+            [
+                { text: getTranslation('admin_back', userLang) }
+            ]
+        ],
+        resize_keyboard: true,
+        one_time_keyboard: false
+    };
+}
+
 module.exports = {
     createMainMenuKeyboard,
     createServicesKeyboard,
@@ -261,5 +311,7 @@ module.exports = {
     createConfirmationKeyboard,
     removeKeyboard,
     createContactKeyboard,
-    createLocationKeyboard
+    createLocationKeyboard,
+    createAdminDashboardKeyboard,
+    createAdminApplicationKeyboard
 };

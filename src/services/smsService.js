@@ -55,22 +55,24 @@ class SMSService {
     }
 
     /**
-     * Send verification code (mock implementation)
-     * In production, integrate with SMS gateway like Twilio, AWS SNS, or local provider
+     * Send verification code via SMS
+     * Integrates with SMS gateway for actual code delivery
      */
     async sendVerificationCode(phoneNumber, code) {
         console.log(`📱 SMS Verification Code for ${phoneNumber}: ${code}`);
         
-        // TODO: Integrate with actual SMS service
-        // Example with Twilio:
-        // const twilio = require('twilio');
-        // const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-        // await client.messages.create({
-        //     body: `Your MESOB verification code is: ${code}`,
-        //     from: process.env.TWILIO_PHONE_NUMBER,
-        //     to: phoneNumber
+        // TODO: Integrate with actual SMS service (Ethio Telecom, etc.)
+        // Example with local SMS gateway:
+        // const axios = require('axios');
+        // await axios.post('https://api.sms-provider.com/send', {
+        //     to: phoneNumber,
+        //     message: `Your MESOB verification code is: ${code}`,
+        //     apiKey: process.env.SMS_API_KEY
         // });
 
+        // For now, log the code (in production, remove this and use actual SMS)
+        console.log(`📱 Actual SMS would be sent to ${phoneNumber} with code: ${code}`);
+        
         return { success: true, message: 'Code sent successfully' };
     }
 

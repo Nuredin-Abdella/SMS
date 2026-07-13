@@ -17,15 +17,16 @@ class ApplicationService {
      */
     startApplication(chatId, userLang) {
         this.userStates.set(chatId, {
-            step: 'select_service',
+            step: 'collect_full_name',
             service: null,
+            formData: {},
             documents: [],
             createdAt: new Date()
         });
 
         return {
             success: true,
-            message: 'Application started. Please select a service.'
+            message: 'Application started. Please provide your information.'
         };
     }
 
@@ -39,9 +40,58 @@ class ApplicationService {
         }
 
         state.service = service;
-        state.step = 'upload_documents';
-
         return { success: true, service };
+    }
+
+    /**
+     * Update form data for current step
+     */
+    updateFormData(chatId, field, value) {
+        const state = this.userStates.get(chatId);
+        if (!state) {
+            return { success: false, error: 'No active application' };
+        }
+
+        state.formData[field] = value;
+        return { success: true };
+    }
+
+    /**
+     * Move to next form step
+     */
+    nextStep(chatId) {
+        const state = this.userStates.get(chatId);
+        if (!state) {
+            return { success: false, error: 'No active application' };
+        }
+
+        const stepFlow = {
+            'collect_full_name': 'collect_phone',
+            'collect_phone': 'collect_email',
+            'collect_email': 'collect_id_number',
+            'collect_id_number': 'collect_address',
+            'collect_address': 'collect_business_license',
+            'collect_business_license': 'collect_business_name',
+            'collect_business_name': 'collect_insurance',
+            'collect_insurance': 'agree_terms',
+            'agree_terms': 'upload_documents',
+            'upload_documents': 'ready_to_submit'
+        };
+
+        if (stepFlow[state.step]) {
+            state.step = stepFlow[state.step];
+            return { success: true, nextStep: state.step };
+        }
+
+        return { success: false, error: 'No next step' };
+    }
+
+    /**
+     * Get current form step
+     */
+    getCurrentStep(chatId) {
+        const state = this.userStates.get(chatId);
+        return state ? state.step : null;
     }
 
     /**
@@ -74,16 +124,13 @@ class ApplicationService {
             return { success: false, error: 'No service selected' };
         }
 
-        if (state.documents.length === 0) {
-            return { success: false, error: 'No documents uploaded' };
-        }
-
         try {
-            // Create application in database
+            // Create application in database with form data (documents optional)
             const trackingNumber = await database.createApplication({
                 chatId,
                 service: state.service,
-                documents: state.documents,
+                formData: state.formData,
+                documents: state.documents || [],
                 status: 'submitted'
             });
 
@@ -102,7 +149,8 @@ class ApplicationService {
                 success: true,
                 trackingNumber,
                 service: state.service,
-                documentCount: state.documents.length
+                documentCount: state.documents.length,
+                formData: state.formData
             };
 
         } catch (error) {

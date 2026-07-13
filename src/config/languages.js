@@ -69,6 +69,200 @@ const translations = {
         om: "📱 Galmaa'uu Fayyadamaa\n\nTajaajila MESOB guutuu fayyadamuuf, maaloo lakkoofsa bilbilaa keessanii galmaa'u.\n\nMaaloo lakkoofsa bilbilaa keessanii galchaa (faormaata: 0912345678 ykn +251912345678):"
     },
 
+    registration_name_prompt: {
+        en: "📝 Please enter your full name:",
+        am: "📝 እባክዎን ሙሉ ስምዎን ያስገቡ:",
+        om: "📝 Maaloo maqaa guutuu keessan galchaa:"
+    },
+
+    registration_email_prompt: {
+        en: "📧 Please enter your email address:",
+        am: "📧 እባክዎን የኢሜይል አድራሻዎን ያስገቡ:",
+        om: "📧 Maaloo e-mail addreesii keessan galchaa:"
+    },
+
+    registration_id_prompt: {
+        en: "🆔 Please enter your ID number (National ID, Passport, or Work Permit):",
+        am: "🆔 እባክዎን የመታወቂያ ቁጥርዎን ያስገቡ (ብሔራዊ መታወቂያ፣ ፓስፖርት ወይም የስራ ፍቃድ):",
+        om: "🆔 Maaloo lakkoofsa ID keessan galchaa (Ragaa Eenyummaa Biyyaalessaa, Paaspoortii, ykn Hayyama Hojii Dhabdummaa):"
+    },
+
+    registration_address_prompt: {
+        en: "📍 Please enter your address:",
+        am: "📍 እባክዎን አድራሻዎን ያስገቡ:",
+        om: "📍 Maaloo teessoo keessan galchaa:"
+    },
+
+    registration_business_license_prompt: {
+        en: "🏢 Please enter your business license number (if applicable):",
+        am: "🏢 እባክዎን የንግድ ፈቃድ ቁጥርዎን ያስገቡ (ከሚሰራ):",
+        om: "🏢 Maaloo lakkoofsa hayyamaa daldalaa keessan galchaa (yoo ta'e):"
+    },
+
+    registration_complete: {
+        en: "✅ Registration completed successfully!\n\nYour profile has been created and you can now access all MESOB services including:\n• National ID\n• Passport\n• Business Registration\n• And all other government services\n\n🎉 Welcome to MESOB!",
+        am: "✅ ምዝገባ በተሳካ ሁኔታ ተጠናቀቀ!\n\nመገለጽዎ ተፈጥሯል እና አሁን የመሶብ አገልግሎቶችን ሁሉ ማውቀር ይችላሉ የተካተሉት:\n• ብሔራዊ መታወቂያ\n• ፓስፖርት\n• የንግድ ምዝገባ\n• እና ሌሎች የመንግስት አገልግሎቶች\n\n🎉 ወደ መሶብ እንኳን በደህና መጡ!",
+        om: "✅ Galmaa'uu guutameera!\n\nAkaa keessan uumameera fi tadaama tajaajila MESOB guutuu fayyadamuu dandeessa akka tajaajiloota kanneen biyyaatiif:\n• Ragaa Eenyummaa Biyyaalessaa\n• Paaspoortii\n• Galmee Daldalaa\n• Fi tajaajiloota mootummaa biroo\n\n🎉 Gara MESOB baga nagaan dhuftan!"
+    },
+
+    // Application Form Fields
+    application_full_name: {
+        en: "📝 Please enter your full name:",
+        am: "📝 እባክዎን ሙሉ ስምዎን ያስገቡ:",
+        om: "📝 Maaloo maqaa guutuu keessan galchaa:"
+    },
+
+    application_phone: {
+        en: "📱 Please enter your phone number:",
+        am: "📱 እባክዎን የስልክ ቁጥርዎን ያስገቡ:",
+        om: "📱 Maaloo lakkoofsa bilbilaa keessan galchaa:"
+    },
+
+    application_email: {
+        en: "📧 Please enter your email address:",
+        am: "📧 እባክዎን የኢሜይል አድራሻዎን ያስገቡ:",
+        om: "📧 Maaloo e-mail addreesii keessan galchaa:"
+    },
+
+    application_id_number: {
+        en: "🆔 Please enter your ID number (National ID, Passport, or Work Permit):",
+        am: "🆔 እባክዎን የመታወቂያ ቁጥርዎን ያስገቡ (ብሔራዊ መታወቂያ፣ ፓስፖርት ወይም የስራ ፍቃድ):",
+        om: "🆔 Maaloo lakkoofsa ID keessan galchaa (Ragaa Eenyummaa Biyyaalessaa, Paaspoortii, ykn Hayyama Hojii Dhabdummaa):"
+    },
+
+    application_address: {
+        en: "📍 Please enter your address:",
+        am: "📍 እባክዎን አድራሻዎን ያስገቡ:",
+        om: "📍 Maaloo teessoo keessan galchaa:"
+    },
+
+    application_business_license: {
+        en: "🏢 Please enter your business license number:",
+        am: "🏢 እባክዎን የንግድ ፈቃድ ቁጥርዎን ያስገቡ:",
+        om: "🏢 Maaloo lakkoofsa hayyamaa daldalaa keessan galchaa:"
+    },
+
+    application_business_name: {
+        en: "🏢 Please enter your business name:",
+        am: "🏢 እባክዎን የንግድ ስምዎን ያስገቡ:",
+        om: "🏢 Maaloo maqaa daldalaa keessan galchaa:"
+    },
+
+    application_insurance_type: {
+        en: "🛡️ Please select insurance type:\n1. Property Insurance\n2. Vehicle Insurance\n3. Health Insurance\n4. Life Insurance\n5. No Insurance",
+        am: "🛡️ እባክዎን የኢንሹራንስ ዓይነት ይምረጡ:\n1. የንብረት ኢንሹራንስ\n2. የተሽከርከሪያ ኢንሹራንስ\n3. የጤና ኢንሹራንስ\n4. የህይወት ኢንሹራንስ\n5. የለም ኢንሹራንስ",
+        om: "🛡️ Maaloo gosa inshuraansii filadhaa:\n1. Inshuraansii Qabiyyee\n2. Inshuraansii Makiinaa\n3. Inshuraansii Faya\n4. Inshuraansii Jireenya\n5. Inshuraansii Hin qabu"
+    },
+
+    application_terms: {
+        en: "📋 Please agree to the terms and conditions:\n\nI agree to the terms and conditions of MESOB service.\n\nReply 'yes' to agree or 'no' to cancel:",
+        am: "📋 እባክዎን የመሶብ አገልግሎት የስምምነት እና ሁኔታዎችን ይስማሙ:\n\nየመሶብ አገልግሎት የስምምነት እና ሁኔታዎችን እስማማለሁ።\n\nለስምምነት 'yes' ወይም ለመሰረዝ 'no' ይጻፉ:",
+        om: "📋 Maaloo seerotaa fi haalalee tajaajila MESOB dhugoomera:\n\nSeerotaa fi haalalee tajaajila MESOB dhugoomera.\n\n'Dhugoomera' jechuun 'yes' deebisaa ykn 'no' dhufuuf barreessaa:"
+    },
+
+    application_upload_info: {
+        en: "📄 Document Upload\n\nPlease upload the required documents for your application.\n\nAllowed formats: PDF, DOCX, PNG, JPG, JPEG\nMaximum size: 10MB per file\nMaximum files: 5\n\nUpload your documents now or type 'skip' to continue without documents:",
+        am: "📄 የሰነዶች ማስረጊያ\n\nእባክዎን ለማመልከቻዎ የሚያስፈልጉ ሰነዶችን ያስረክ።\n\nየሚፈቀዱ ቅርጸቶች: PDF, DOCX, PNG, JPG, JPEG\nከፍተኛ መጠን: 10MB ለእያንዳንዱ ፋይል\nከፍተኛ ፋይሎች: 5\n\nሰነዶችዎን አሁን ያስረክ ወይም ሰነዶች ሳይኖሩ ለመቀጠር 'skip' ይጻፉ:",
+        om: "📄 Erga Sanadootaa\n\nMaaloo sanadoota barbaachisaa iyyannoo keessan gaafachuu.\n\nFaawmaatiin fayyadamuu danda'u: PDF, DOCX, PNG, JPG, JPEG\nHanga guutu: 10MB faayilii tokkoon\nHanga faayilii: 5\n\nSanadoota keessan amma ergaa ykn sanadoota hin qabneef 'skip' dhufuuf barreessaa:"
+    },
+
+    // Admin Dashboard
+    admin_login_prompt: {
+        en: "🔐 Admin Login\n\nPlease enter your admin credentials to access the dashboard.\n\nFormat: email:password",
+        am: "🔐 የአስተዳዳሪ መግቢያ\n\nእባክዎን የአስተዳዳሪ መለያዎን ያስገቡ ለዳሽቦርድ መድረስ።\n\nቅርጸት: email:password",
+        om: "🔐 Seemni Adeemsaa\n\nMaaloo sadirqaa admin keessan galchi dashboard keessatti fayyadamuuf.\n\nFaormaata: email:password"
+    },
+
+    admin_login_success: {
+        en: "✅ Admin login successful!\n\nWelcome to the MESOB Admin Dashboard.",
+        am: "✅ የአስተዳዳሪ መግቢያ ተሳካል!\n\nወደ መሶብ አስተዳዳሪ ዳሽቦርድ እንኳን በደህና መጡ!",
+        om: "✅ Seemni admin guutameera!\n\nBaga nagaan dhuftan gara Dashboard admin MESOB."
+    },
+
+    admin_login_failed: {
+        en: "❌ Admin login failed.\n\nInvalid credentials. Please try again.",
+        am: "❌ የአስተዳዳሪ መግቢያ አልተሳካም።\n\nየትክክለኛ ያልሆነ መለያ። እባክዎን እንደገና ይሞክሩ።",
+        om: "❌ Seemni admin hawweera.\n\nSadirqaa dogoggora. Maaloo irra deebi'ii yaaliitii."
+    },
+
+    admin_dashboard: {
+        en: "📊 MESOB Admin Dashboard\n\nSelect an option:",
+        am: "📊 የመሶብ አስተዳዳሪ ዳሽቦርድ\n\nአማራጭ ይምረጡ:",
+        om: "📊 Dashboard Admin MESOB\n\nMaaloo filadhaa:"
+    },
+
+    admin_view_applications: {
+        en: "📋 View Applications",
+        am: "📋 ማመልከቻዎች ይመለከቱ",
+        om: "📋 Iyyannoolee Ilaali"
+    },
+
+    admin_view_users: {
+        en: "👥 View Users",
+        am: "👥 ተጠቃሚዎችን ይመለከቱ",
+        om: "👥 Fayyadamaa Ilaali"
+    },
+
+    admin_statistics: {
+        en: "📊 Statistics",
+        am: "📊 ስታቲስቲክስ",
+        om: "📊 Tiijoormaawwan"
+    },
+
+    admin_settings: {
+        en: "⚙️ Settings",
+        am: "⚙️ ቅንብሮች",
+        om: "⚙️ Seettiwwan"
+    },
+
+    admin_logout: {
+        en: "🚪 Logout",
+        am: "🚪 ውጣ",
+        om: "🚪 Bahee"
+    },
+
+    admin_back: {
+        en: "🔙 Back to Dashboard",
+        am: "🔙 ወደ ዳሽቦርድ ተመለስ",
+        om: "🔙 Deebi\'ii Dashboard"
+    },
+
+    admin_application_details: {
+        en: "📋 Application Details\n\nTracking Number: {trackingNumber}\nService: {service}\nStatus: {status}\n\n👤 Applicant Information:\nName: {fullName}\nPhone: {phone}\nEmail: {email}\nID: {idNumber}\nAddress: {address}\n\n📄 Documents: {documentCount}\n\n📝 Notes: {notes}",
+        am: "📋 የማመልከቻ ዝርዝሮች\n\nየማጣቀሻ ቁጥር: {trackingNumber}\nአገልግሎት: {service}\nሁኔታ: {status}\n\n👤 የአመራጭ መረጃ:\nስም: {fullName}\nስልክ: {phone}\nኢሜይል: {email}\nID: {idNumber}\nአድራሻ: {address}\n\n📄 ሰነዶች: {documentCount}\n\n📝 ማስታወሻዎች: {notes}",
+        om: "📝 Maqaa Iyyannoo\n\nLakkoofsa Wabiinsa: {trackingNumber}\nTajaajila: {service}\nHaala: {status}\n\n👤 Odeeffannoo Filataa:\nMaqaa: {fullName}\nBilbila: {phone}\nEmail: {email}\nID: {idNumber}\nTeessoo: {address}\n\n📄 Sanadoota: {documentCount}\n\n📝 Yaadameewwan: {notes}"
+    },
+
+    admin_approve_application: {
+        en: "✅ Application Approved\n\nTracking Number: {trackingNumber}\nStatus changed to: Approved",
+        am: "✅ ማመልከቻ ተፈቅዷል\n\nየማጣቀሻ ቁጥር: {trackingNumber}\nሁኔታ ቀይሯል: ተፈቅዷል",
+        om: "✅ Iyyannoo Ergameera\n\nLakkoofsa Wabiinsa: {trackingNumber}\nHaala jijjiirameera: Ergameera"
+    },
+
+    admin_reject_application: {
+        en: "❌ Application Rejected\n\nTracking Number: {trackingNumber}\nStatus changed to: Rejected",
+        am: "❌ ማመልከቻ ተከለከለ\n\nየማጣቀሻ ቁጥር: {trackingNumber}\nሁኔታ ቀይሯል: ተከለከለ",
+        om: "❌ Iyyannoo Cufameera\n\nLakkoofsa Wabiinsa: {trackingNumber}\nHaala jijjiirameera: Cufameera"
+    },
+
+    admin_add_note: {
+        en: "📝 Add Note\n\nPlease enter your note for application {trackingNumber}:",
+        am: "📝 ማስታወሻ ይጨምሩ\n\nእባክዎን ማስታወሻዎን ያስገቡ ለማመልከቻ {trackingNumber}:",
+        om: "📝 Yaadamee Qoodaa\n\nMaaloo yaadamee keessan galchaa iyyannoo {trackingNumber}:"
+    },
+
+    admin_note_added: {
+        en: "✅ Note added successfully",
+        am: "✅ ማስታወሻ ተጨምረዋል",
+        om: "✅ Yaadamee guutameera qoodameera"
+    },
+
+    admin_statistics_summary: {
+        en: "📊 MESOB Statistics\n\n👥 Total Users: {totalUsers}\n📋 Total Applications: {totalApplications}\n⏳ Pending: {pending}\n✅ Approved: {approved}\n❌ Rejected: {rejected}\n\n🏛️ Service Breakdown:\n{serviceBreakdown}",
+        am: "📊 የመሶብ ስታቲስቲክስ\n\n👥 ጠቅላላ ተጠቃሚዎች: {totalUsers}\n📋 ጠቅላላ ማመልከቻዎች: {totalApplications}\n⏳ በመጠባበብ ላይ: {pending}\n✅ ተፈቅዷል: {approved}\n❌ ተከለከለ: {rejected}\n\n🏛️ የአገልግሎት ምዝገት:\n{serviceBreakdown}",
+        om: "📊 Tiijoormaawwan MESOB\n\n👥 Fayyadamaa Waliigalaa: {totalUsers}\n📋 Iyyannoolee Waliigalaa: {totalApplications}\n⏳ Jiraa: {pending}\n✅ Ergameera: {approved}\n❌ Cufameera: {rejected}\n\n🏛️ Qoodama Tajaajilaa:\n{serviceBreakdown}"
+    },
+
     registration_phone_invalid: {
         en: "❌ Invalid phone number format. Please use Ethiopian format: 0912345678 or +251912345678",
         am: "❌ የትክክለኛ ያልሆነ የስልክ ቁጥር ቅርጸት። እባክዎን የኢትዮጵያ ቅርጸት ይጠቀሙ: 0912345678 ወይም +251912345678",
@@ -94,9 +288,9 @@ const translations = {
     },
 
     registration_success: {
-        en: "✅ Registration successful!\n\nYour account is now verified and you can access all MESOB services.\n\n🎉 Welcome to MESOB!",
-        am: "✅ ምዝገባ በተሳካ ሁኔታ ተጠናቀቀ!\n\nመለያዎ አሁን ተረጋግጧል እና የመሶብ አገልግሎቶችን ሁሉ ማውቀር ይችላሉ።\n\n🎉 ወደ መሶብ እንኳን በደህና መጡ!",
-        om: "✅ Galmaa'uu guutameera!\n\nAkaa keessan amma mirkaneefameera fi tajaajila MESOB guutuu fayyadamuu dandeessa.\n\n🎉 Gara MESOB baga nagaan dhuftan!"
+        en: "✅ Registration successful!\n\nYour phone number has been verified and you can now access all MESOB services including:\n• National ID\n• Passport\n• Business Registration\n• And all other government services\n\n🎉 Welcome to MESOB!",
+        am: "✅ ምዝገባ በተሳካ ሁኔታ ተጠናቀቀ!\n\nየስልክ ቁጥርዎ ተረጋግጧል እና አሁን የመሶብ አገልግሎቶችን ሁሉ ማውቀር ይችላሉ የተካተሉት:\n• ብሔራዊ መታወቂያ\n• ፓስፖርት\n• የንግድ ምዝገባ\n• እና ሌሎች የመንግስት አገልግሎቶች\n\n🎉 ወደ መሶብ እንኳን በደህና መጡ!",
+        om: "✅ Galmaa'uu guutameera!\n\nLakkoofsa bilbilaa keessan mirkaneefameera fi tadaama tajaajila MESOB guutuu fayyadamuu dandeessa akka tajaajiloota kanneen biyyaatiif:\n• Ragaa Eenyummaa Biyyaalessaa\n• Paaspoortii\n• Galmee Daldalaa\n• Fi tajaajiloota mootummaa biroo\n\n🎉 Gara MESOB baga nagaan dhuftan!"
     },
 
     registration_already_registered: {

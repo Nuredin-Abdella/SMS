@@ -11,7 +11,12 @@ const userStates = new Map();
  * {
  *   language: 'en' | 'am' | 'om',
  *   lastActivity: Date,
- *   sessionData: {}
+ *   sessionData: {},
+ *   registrationStep: 'phone' | 'code' | 'name' | 'email' | 'id' | 'address' | 'business' | 'complete',
+ *   registrationData: {},
+ *   isAdmin: boolean,
+ *   adminStep: 'dashboard' | 'view_applications' | 'view_users' | 'statistics' | 'settings',
+ *   selectedApplication: string (tracking number)
  * }
  */
 
@@ -146,6 +151,176 @@ function getUserStats() {
 }
 
 /**
+ * Set user registration step
+ * @param {number|string} userId - User ID or Chat ID
+ * @param {string} step - Registration step
+ */
+function setRegistrationStep(userId, step) {
+    const userIdStr = userId.toString();
+    const existingState = userStates.get(userIdStr) || {};
+
+    userStates.set(userIdStr, {
+        ...existingState,
+        registrationStep: step,
+        lastActivity: new Date()
+    });
+}
+
+/**
+ * Get user registration step
+ * @param {number|string} userId - User ID or Chat ID
+ * @returns {string|null} Current registration step
+ */
+function getRegistrationStep(userId) {
+    const userState = userStates.get(userId.toString());
+    return userState?.registrationStep || null;
+}
+
+/**
+ * Set user registration data
+ * @param {number|string} userId - User ID or Chat ID
+ * @param {Object} data - Registration data
+ */
+function setRegistrationData(userId, data) {
+    const userIdStr = userId.toString();
+    const existingState = userStates.get(userIdStr) || {};
+
+    userStates.set(userIdStr, {
+        ...existingState,
+        registrationData: {
+            ...existingState.registrationData,
+            ...data
+        },
+        lastActivity: new Date()
+    });
+}
+
+/**
+ * Get user registration data
+ * @param {number|string} userId - User ID or Chat ID
+ * @returns {Object} Registration data
+ */
+function getRegistrationData(userId) {
+    const userState = userStates.get(userId.toString());
+    return userState?.registrationData || {};
+}
+
+/**
+ * Clear user registration data
+ * @param {number|string} userId - User ID or Chat ID
+ */
+function clearRegistrationData(userId) {
+    const userIdStr = userId.toString();
+    const existingState = userStates.get(userIdStr);
+
+    if (existingState) {
+        userStates.set(userIdStr, {
+            ...existingState,
+            registrationStep: null,
+            registrationData: {},
+            lastActivity: new Date()
+        });
+    }
+}
+
+/**
+ * Set user as admin
+ * @param {number|string} userId - User ID or Chat ID
+ * @param {boolean} isAdmin - Admin status
+ */
+function setAdminStatus(userId, isAdmin) {
+    const userIdStr = userId.toString();
+    const existingState = userStates.get(userIdStr) || {};
+
+    userStates.set(userIdStr, {
+        ...existingState,
+        isAdmin,
+        lastActivity: new Date()
+    });
+}
+
+/**
+ * Check if user is admin
+ * @param {number|string} userId - User ID or Chat ID
+ * @returns {boolean} Admin status
+ */
+function isAdmin(userId) {
+    const userState = userStates.get(userId.toString());
+    return userState?.isAdmin || false;
+}
+
+/**
+ * Set admin step
+ * @param {number|string} userId - User ID or Chat ID
+ * @param {string} step - Admin step
+ */
+function setAdminStep(userId, step) {
+    const userIdStr = userId.toString();
+    const existingState = userStates.get(userIdStr) || {};
+
+    userStates.set(userIdStr, {
+        ...existingState,
+        adminStep: step,
+        lastActivity: new Date()
+    });
+}
+
+/**
+ * Get admin step
+ * @param {number|string} userId - User ID or Chat ID
+ * @returns {string|null} Current admin step
+ */
+function getAdminStep(userId) {
+    const userState = userStates.get(userId.toString());
+    return userState?.adminStep || null;
+}
+
+/**
+ * Set selected application for admin
+ * @param {number|string} userId - User ID or Chat ID
+ * @param {string} trackingNumber - Application tracking number
+ */
+function setSelectedApplication(userId, trackingNumber) {
+    const userIdStr = userId.toString();
+    const existingState = userStates.get(userIdStr) || {};
+
+    userStates.set(userIdStr, {
+        ...existingState,
+        selectedApplication: trackingNumber,
+        lastActivity: new Date()
+    });
+}
+
+/**
+ * Get selected application for admin
+ * @param {number|string} userId - User ID or Chat ID
+ * @returns {string|null} Selected application tracking number
+ */
+function getSelectedApplication(userId) {
+    const userState = userStates.get(userId.toString());
+    return userState?.selectedApplication || null;
+}
+
+/**
+ * Clear admin session
+ * @param {number|string} userId - User ID or Chat ID
+ */
+function clearAdminSession(userId) {
+    const userIdStr = userId.toString();
+    const existingState = userStates.get(userIdStr);
+
+    if (existingState) {
+        userStates.set(userIdStr, {
+            ...existingState,
+            isAdmin: false,
+            adminStep: null,
+            selectedApplication: null,
+            lastActivity: new Date()
+        });
+    }
+}
+
+/**
  * Initialize user state management with periodic cleanup
  */
 function initializeUserStateManager() {
@@ -165,5 +340,17 @@ module.exports = {
     clearUserSession,
     cleanupInactiveUsers,
     getUserStats,
-    initializeUserStateManager
+    initializeUserStateManager,
+    setRegistrationStep,
+    getRegistrationStep,
+    setRegistrationData,
+    getRegistrationData,
+    clearRegistrationData,
+    setAdminStatus,
+    isAdmin,
+    setAdminStep,
+    getAdminStep,
+    setSelectedApplication,
+    getSelectedApplication,
+    clearAdminSession
 };

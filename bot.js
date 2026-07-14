@@ -41,15 +41,15 @@ const bot = new TelegramBot(process.env.BOT_TOKEN, botOptions);
 
 // Import utilities
 const { getTranslation } = require('./src/config/languages');
-const { 
-    getUserLanguage, setUserLanguage, 
-    setRegistrationStep, getRegistrationStep, 
+const {
+    getUserLanguage, setUserLanguage,
+    setRegistrationStep, getRegistrationStep,
     setRegistrationData, getRegistrationData, clearRegistrationData,
     setAdminStatus, isAdmin, setAdminStep, getAdminStep,
-    initializeUserStateManager 
+    initializeUserStateManager
 } = require('./src/utils/userState');
-const { 
-    createMainMenuKeyboard, createServicesKeyboard, 
+const {
+    createMainMenuKeyboard, createServicesKeyboard,
     createLanguageKeyboard, createAdminDashboardKeyboard,
     createServicePodsKeyboard, createInlineServiceKeyboard
 } = require('./src/utils/keyboards');
@@ -314,14 +314,14 @@ bot.on('callback_query', async (query) => {
         if (data.startsWith('pod_')) {
             const podId = data.replace('pod_', '');
             const pod = servicePods[podId];
-            
+
             if (pod) {
                 await bot.answerCallbackQuery(query.id);
                 const podServices = pod.services.map(s => services[s]).filter(Boolean);
-                
+
                 if (podServices.length > 0) {
                     const inlineKeyboard = createInlineServiceKeyboard(podServices);
-                    await bot.sendMessage(chatId, 
+                    await bot.sendMessage(chatId,
                         `${pod.emoji} ${pod.name}\n\n${pod.description}\n\nSelect a service:`,
                         { reply_markup: inlineKeyboard }
                     );
@@ -338,10 +338,10 @@ bot.on('callback_query', async (query) => {
             if (pod) {
                 await bot.answerCallbackQuery(query.id);
                 const podServices = pod.services.map(s => services[s]).filter(Boolean);
-                
+
                 if (podServices.length > 0) {
                     const inlineKeyboard = createInlineServiceKeyboard(podServices);
-                    await bot.sendMessage(chatId, 
+                    await bot.sendMessage(chatId,
                         `${pod.emoji} ${pod.name}\n\n${pod.description}\n\nSelect a service:`,
                         { reply_markup: inlineKeyboard }
                     );
@@ -355,7 +355,7 @@ bot.on('callback_query', async (query) => {
         if (data.startsWith('service_')) {
             const serviceName = data.replace('service_', '').replace(/_/g, ' ');
             const service = Object.values(services).find(s => s.name.toLowerCase() === serviceName.toLowerCase());
-            
+
             if (service) {
                 await bot.answerCallbackQuery(query.id);
                 const user = await database.getUser(chatId);
@@ -397,11 +397,11 @@ bot.on('callback_query', async (query) => {
         if (data.startsWith('lang_')) {
             const lang = data.replace('lang_', '');
             const langNames = { 'en': '🇺🇸 English', 'am': '🇪🇹 አማርኛ', 'om': '🇪🇹 Afaan Oromo' };
-            
+
             setUserLanguage(chatId, lang);
             await bot.answerCallbackQuery(query.id);
             await bot.sendMessage(chatId, `✅ Language set to ${langNames[lang]}`);
-            
+
             const keyboard = createMainMenuKeyboard(lang);
             await bot.sendMessage(chatId, '🏠 Main Menu', { reply_markup: keyboard });
         }
@@ -436,7 +436,7 @@ bot.on('message', async (msg) => {
                 case '/start':
                     setUserLanguage(chatId, 'en');
                     const keyboard = createLanguageKeyboard();
-                    await bot.sendMessage(chatId, 
+                    await bot.sendMessage(chatId,
                         '🏛️ Welcome to MESOB Shashemene!\n\n' +
                         'Your digital gateway to government services.\n\n' +
                         'Please select your preferred language:',
@@ -482,7 +482,7 @@ bot.on('message', async (msg) => {
         // Handle main menu options
         if (text === '🏛️ Services') {
             const keyboard = createServicePodsKeyboard(userLang);
-            return await bot.sendMessage(chatId, 
+            return await bot.sendMessage(chatId,
                 '🏛️ MESOB Service Pods\n\nSelect a service pod to explore:',
                 { reply_markup: keyboard }
             );
@@ -494,10 +494,10 @@ bot.on('message', async (msg) => {
             const pod = Object.values(servicePods).find(p => p.name === text);
             if (pod) {
                 const podServices = pod.services.map(s => services[s]).filter(Boolean);
-                
+
                 if (podServices.length > 0) {
                     const inlineKeyboard = createInlineServiceKeyboard(podServices);
-                    await bot.sendMessage(chatId, 
+                    await bot.sendMessage(chatId,
                         `${pod.emoji} ${pod.name}\n\n${pod.description}\n\nSelect a service:`,
                         { reply_markup: inlineKeyboard }
                     );
@@ -509,7 +509,7 @@ bot.on('message', async (msg) => {
         }
 
         if (text === '🔍 Track Application') {
-            return await bot.sendMessage(chatId, 
+            return await bot.sendMessage(chatId,
                 '🔍 Track Application\n\nEnter your tracking number to check your application status:'
             );
         }
@@ -540,11 +540,11 @@ bot.on('message', async (msg) => {
         if (text === '📱 Register') {
             const user = await database.getUser(chatId);
             if (user && user.personalInfo && user.personalInfo.phoneVerified) {
-                return await bot.sendMessage(chatId, 
+                return await bot.sendMessage(chatId,
                     `✅ You are already registered!\n\nPhone: ${user.personalInfo.phoneNumber}\nName: ${user.personalInfo.fullName}`
                 );
             }
-            return await bot.sendMessage(chatId, 
+            return await bot.sendMessage(chatId,
                 '📱 Registration\n\nPlease enter your phone number (format: 0912345678 or +251912345678):'
             );
         }
@@ -612,7 +612,7 @@ bot.on('message', async (msg) => {
 
             clearRegistrationData(chatId);
 
-            await bot.sendMessage(chatId, 
+            await bot.sendMessage(chatId,
                 '✅ Registration completed successfully!\n\nYou can now access all MESOB services.'
             );
 
@@ -626,7 +626,7 @@ bot.on('message', async (msg) => {
         // Handle application form steps
         if (applicationService.hasActiveApplication(chatId)) {
             const result = await applicationService.processApplicationStep(chatId, text, bot, getTranslation, userLang);
-            
+
             if (result.success) {
                 if (result.completed) {
                     await bot.sendMessage(chatId, result.message);
@@ -661,7 +661,7 @@ bot.on('message', async (msg) => {
                 };
 
                 const statusMessage = statusMessages[application.status] || application.status;
-                
+
                 const message = `📋 Application Status\n\n` +
                     `🔍 Tracking Number: ${application.trackingNumber}\n` +
                     `🏛️ Service: ${application.service}\n` +
@@ -670,10 +670,10 @@ bot.on('message', async (msg) => {
                     `🕐 Last Updated: ${application.updatedAt.toLocaleDateString()}\n\n` +
                     `📞 For inquiries: +251 913 116898\n` +
                     `🌐 Visit: mesobshashe.gov.et`;
-                
+
                 await bot.sendMessage(chatId, message);
             } else {
-                await bot.sendMessage(chatId, 
+                await bot.sendMessage(chatId,
                     `❌ Application not found.\n\nPlease check your tracking number and try again.`
                 );
             }
@@ -743,7 +743,7 @@ bot.on('message', async (msg) => {
 
                 if (text === '📊 Statistics') {
                     const stats = await adminService.getStatistics();
-                    await bot.sendMessage(chatId, 
+                    await bot.sendMessage(chatId,
                         `📊 Statistics:\n\n` +
                         `Total Users: ${stats.totalUsers}\n` +
                         `Total Applications: ${stats.totalApplications}\n` +
@@ -764,7 +764,7 @@ bot.on('message', async (msg) => {
         }
 
         // Default response
-        await bot.sendMessage(chatId, 
+        await bot.sendMessage(chatId,
             '❓ I didn\'t understand that. Please use the menu buttons or type /help for assistance.'
         );
 
@@ -782,12 +782,21 @@ function clearAdminSession(chatId) {
 /**
  * Start bot polling
  */
-bot.startPolling();
-console.log('✅ MESOB Shashemene Professional Bot Connected Successfully!');
-console.log('🤖 Bot Name: MESOB-SHASHE');
-console.log('👤 Username: @MESOB_SHASHE_bot');
-console.log('🆔 Bot ID: ' + bot.me.id);
-console.log('🌍 Languages: English, አማርኛ, Afaan Oromo');
-console.log('🏛️ Service Pods: 12 (130+ services)');
-console.log('🚀 Ready to serve MESOB users!');
-console.log('📝 Send /start to begin interaction');
+bot.getMe().then((botInfo) => {
+    console.log('✅ MESOB Shashemene Professional Bot Connected Successfully!');
+    console.log(`🤖 Bot Name: ${botInfo.first_name}`);
+    console.log(`👤 Username: @${botInfo.username}`);
+    console.log(`🆔 Bot ID: ${botInfo.id}`);
+    console.log('🌍 Languages: English, አማርኛ, Afaan Oromo');
+    console.log('🏛️ Service Pods: 12 (130+ services)');
+    console.log('🚀 Ready to serve MESOB users!');
+    console.log('📝 Send /start to begin interaction');
+
+    // Start polling after successful connection
+    return bot.startPolling();
+}).then(() => {
+    console.log('✅ Bot is running! Send /start to your bot to test it.');
+}).catch((error) => {
+    console.error('❌ Failed to start bot:', error.message);
+    process.exit(1);
+});

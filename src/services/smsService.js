@@ -1,97 +1,20 @@
 /**
- * SMS Verification Service
- * Handles phone number verification for user registration
+ * SMS Service - Simplified
+ * Handles phone number validation and formatting
  */
 
-const crypto = require('crypto');
-
 class SMSService {
-    constructor() {
-        this.verificationCodes = new Map();
-        this.codeExpiry = 5 * 60 * 1000; // 5 minutes
-    }
-
-    /**
-     * Generate a 6-digit verification code
-     */
-    generateVerificationCode() {
-        return Math.floor(100000 + Math.random() * 900000).toString();
-    }
-
-    /**
-     * Store verification code
-     */
-    storeCode(chatId, phoneNumber, code) {
-        this.verificationCodes.set(chatId, {
-            phoneNumber,
-            code,
-            expiresAt: Date.now() + this.codeExpiry
-        });
-    }
-
-    /**
-     * Verify code
-     */
-    verifyCode(chatId, code) {
-        const stored = this.verificationCodes.get(chatId);
-        
-        if (!stored) {
-            return { success: false, message: 'No verification code found' };
-        }
-
-        if (Date.now() > stored.expiresAt) {
-            this.verificationCodes.delete(chatId);
-            return { success: false, message: 'Code expired' };
-        }
-
-        if (stored.code !== code) {
-            return { success: false, message: 'Invalid code' };
-        }
-
-        const phoneNumber = stored.phoneNumber;
-        this.verificationCodes.delete(chatId);
-        
-        return { success: true, phoneNumber };
-    }
-
-    /**
-     * Send verification code via SMS
-     * Integrates with SMS gateway for actual code delivery
-     */
-    async sendVerificationCode(phoneNumber, code) {
-        console.log(`📱 SMS Verification Code for ${phoneNumber}: ${code}`);
-        
-        // TODO: Integrate with actual SMS service (Ethio Telecom, etc.)
-        // Example with local SMS gateway:
-        // const axios = require('axios');
-        // await axios.post('https://api.sms-provider.com/send', {
-        //     to: phoneNumber,
-        //     message: `Your MESOB verification code is: ${code}`,
-        //     apiKey: process.env.SMS_API_KEY
-        // });
-
-        // For now, log the code (in production, remove this and use actual SMS)
-        console.log(`📱 Actual SMS would be sent to ${phoneNumber} with code: ${code}`);
-        
-        return { success: true, message: 'Code sent successfully' };
-    }
-
     /**
      * Format phone number to Ethiopian format
      */
     formatPhoneNumber(phoneNumber) {
-        // Remove all non-digit characters
         let cleaned = phoneNumber.replace(/\D/g, '');
-        
-        // Add country code if missing
         if (cleaned.startsWith('0')) {
             cleaned = '251' + cleaned.substring(1);
         }
-        
         if (!cleaned.startsWith('251')) {
             cleaned = '251' + cleaned;
         }
-        
         return '+' + cleaned;
     }
 
@@ -100,23 +23,8 @@ class SMSService {
      */
     validatePhoneNumber(phoneNumber) {
         const cleaned = phoneNumber.replace(/\D/g, '');
-        
-        // Ethiopian phone numbers: 251 followed by 9 digits
         const ethiopianPhoneRegex = /^251[9]\d{8}$/;
-        
         return ethiopianPhoneRegex.test(cleaned);
-    }
-
-    /**
-     * Clean up expired codes
-     */
-    cleanupExpiredCodes() {
-        const now = Date.now();
-        for (const [chatId, data] of this.verificationCodes.entries()) {
-            if (now > data.expiresAt) {
-                this.verificationCodes.delete(chatId);
-            }
-        }
     }
 }
 

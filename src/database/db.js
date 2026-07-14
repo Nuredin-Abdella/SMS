@@ -1,22 +1,19 @@
 /**
- * Database Layer for MESOB Bot
- * Handles MongoDB connections and data operations
+ * Database Manager for MESOB Bot
+ * Handles MongoDB connection with in-memory fallback
  */
 
 const { MongoClient } = require('mongodb');
-const security = require('../middleware/security');
 
 class DatabaseManager {
     constructor() {
+        this.mongoUrl = process.env.MONGODB_URI || null;
         this.client = null;
         this.db = null;
-        this.collections = {};
+        this.collections = null;
         this.isConnected = false;
 
-        // MongoDB connection URL (fallback to in-memory if not provided)
-        this.mongoUrl = process.env.MONGODB_URL || null;
-
-        // In-memory fallback storage
+        // In-memory storage fallback
         this.memoryStorage = {
             users: new Map(),
             sessions: new Map(),
@@ -45,9 +42,6 @@ class DatabaseManager {
                     analytics: this.db.collection('analytics')
                 };
 
-                // Create indexes for better performance
-                await this.createIndexes();
-
                 this.isConnected = true;
                 console.log('✅ MongoDB connected successfully');
                 return true;
@@ -63,21 +57,15 @@ class DatabaseManager {
     }
 
     /**
-     * Create database indexes
+     * Generate tracking number
      */
-    async createIndexes() {
-        try {
-            await this.collections.users.createIndex({ chatId: 1 }, { unique: true });
-            await this.collections.users.createIndex({ userId: 1 });
-            await this.collections.sessions.createIndex({ chatId: 1 });
-            await this.collections.sessions.createIndex({ createdAt: 1 }, { expireAfterSeconds: 86400 }); // 24 hours
-            await this.collections.applications.createIndex({ trackingNumber: 1 }, { unique: true });
-            await this.collections.applications.createIndex({ chatId: 1 });
-            await this.collections.auditLogs.createIndex({ timestamp: 1 });
-            await this.collections.analytics.createIndex({ date: 1 });
-        } catch (error) {
-            console.error('❌ Failed to create indexes:', error.message);
+    generateTrackingNumber() {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let result = '';
+        for (let i = 0; i < 8; i++) {
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
         }
+        return result;
     }
 
     /**
@@ -86,7 +74,6 @@ class DatabaseManager {
     async saveUser(userData) {
         const encryptedData = {
             ...userData,
-            personalInfo: security.encryptData(userData.personalInfo || {}),
             createdAt: new Date(),
             updatedAt: new Date()
         };
@@ -113,9 +100,6 @@ class DatabaseManager {
         if (this.isConnected) {
             try {
                 const user = await this.collections.users.findOne({ chatId });
-                if (user && user.personalInfo) {
-                    user.personalInfo = security.decryptData(user.personalInfo);
-                }
                 return user;
             } catch (error) {
                 console.error('❌ Failed to get user from MongoDB:', error.message);
@@ -123,11 +107,7 @@ class DatabaseManager {
         }
 
         // Fallback to memory storage
-        const user = this.memoryStorage.users.get(chatId.toString());
-        if (user && user.personalInfo) {
-            user.personalInfo = security.decryptData(user.personalInfo);
-        }
-        return user;
+        return this.memoryStorage.users.get(chatId.toString());
     }
 
     async getUserByPhoneNumber(phoneNumber) {
@@ -136,9 +116,6 @@ class DatabaseManager {
                 const user = await this.collections.users.findOne({ 
                     'personalInfo.phoneNumber': phoneNumber 
                 });
-                if (user && user.personalInfo) {
-                    user.personalInfo = security.decryptData(user.personalInfo);
-                }
                 return user;
             } catch (error) {
                 console.error('❌ Failed to get user by phone from MongoDB:', error.message);
@@ -148,9 +125,6 @@ class DatabaseManager {
         // Fallback to memory storage
         for (const [chatId, userData] of this.memoryStorage.users.entries()) {
             if (userData.personalInfo && userData.personalInfo.phoneNumber === phoneNumber) {
-                if (userData.personalInfo) {
-                    userData.personalInfo = security.decryptData(userData.personalInfo);
-                }
                 return userData;
             }
         }
@@ -162,7 +136,7 @@ class DatabaseManager {
             try {
                 const user = await this.collections.users.findOne({ chatId });
                 if (user) {
-                    const personalInfo = user.personalInfo ? security.decryptData(user.personalInfo) : {};
+                    const personalInfo = user.personalInfo || {};
                     personalInfo.phoneNumber = phoneNumber;
                     personalInfo.phoneVerified = isVerified;
                     
@@ -170,7 +144,7 @@ class DatabaseManager {
                         { chatId },
                         { 
                             $set: { 
-                                personalInfo: security.encryptData(personalInfo),
+                                personalInfo: personalInfo,
                                 updatedAt: new Date()
                             }
                         }
@@ -185,17 +159,17 @@ class DatabaseManager {
         // Fallback to memory storage
         const user = this.memoryStorage.users.get(chatId.toString());
         if (user) {
-            if (!user.personalInfo) user.personalInfo = {};
+            user.personalInfo = user.personalInfo || {};
             user.personalInfo.phoneNumber = phoneNumber;
             user.personalInfo.phoneVerified = isVerified;
-            user.personalInfo = security.encryptData(user.personalInfo);
             user.updatedAt = new Date();
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
-     * Application tracking
+     * Application management
      */
     async createApplication(applicationData) {
         const trackingNumber = this.generateTrackingNumber();
@@ -210,8 +184,9 @@ class DatabaseManager {
         if (this.isConnected) {
             try {
                 await this.collections.applications.insertOne(application);
+                return trackingNumber;
             } catch (error) {
-                console.error('❌ Failed to save application to MongoDB:', error.message);
+                console.error('❌ Failed to create application in MongoDB:', error.message);
             }
         }
 
@@ -223,7 +198,8 @@ class DatabaseManager {
     async getApplication(trackingNumber) {
         if (this.isConnected) {
             try {
-                return await this.collections.applications.findOne({ trackingNumber });
+                const application = await this.collections.applications.findOne({ trackingNumber });
+                return application;
             } catch (error) {
                 console.error('❌ Failed to get application from MongoDB:', error.message);
             }
@@ -233,203 +209,99 @@ class DatabaseManager {
         return this.memoryStorage.applications.get(trackingNumber);
     }
 
-    async updateApplicationStatus(trackingNumber, status, notes = '') {
-        const updateData = {
-            status,
-            notes,
-            updatedAt: new Date()
-        };
-
-        if (this.isConnected) {
-            try {
-                await this.collections.applications.updateOne(
-                    { trackingNumber },
-                    { $set: updateData }
-                );
-            } catch (error) {
-                console.error('❌ Failed to update application in MongoDB:', error.message);
-            }
-        }
-
-        // Fallback to memory storage
-        const application = this.memoryStorage.applications.get(trackingNumber);
-        if (application) {
-            Object.assign(application, updateData);
-        }
-    }
-
     async getApplicationsByChatId(chatId) {
         if (this.isConnected) {
             try {
-                return await this.collections.applications.find({ chatId }).toArray();
+                const applications = await this.collections.applications
+                    .find({ chatId })
+                    .sort({ createdAt: -1 })
+                    .toArray();
+                return applications;
             } catch (error) {
                 console.error('❌ Failed to get applications from MongoDB:', error.message);
             }
         }
 
         // Fallback to memory storage
-        return Array.from(this.memoryStorage.applications.values())
-            .filter(app => app.chatId === chatId);
-    }
-
-    /**
-     * Audit logging
-     */
-    async logActivity(activityData) {
-        const logEntry = {
-            ...activityData,
-            timestamp: new Date(),
-            id: require('crypto').randomUUID()
-        };
-
-        if (this.isConnected) {
-            try {
-                await this.collections.auditLogs.insertOne(logEntry);
-            } catch (error) {
-                console.error('❌ Failed to save audit log to MongoDB:', error.message);
+        const applications = [];
+        for (const [trackingNumber, application] of this.memoryStorage.applications.entries()) {
+            if (application.chatId === chatId) {
+                applications.push(application);
             }
         }
-
-        // Fallback to memory storage
-        this.memoryStorage.auditLogs.push(logEntry);
-
-        // Keep only last 1000 entries in memory
-        if (this.memoryStorage.auditLogs.length > 1000) {
-            this.memoryStorage.auditLogs.shift();
-        }
+        return applications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     }
 
-    /**
-     * Analytics tracking
-     */
-    async trackAnalytics(event, data) {
-        const today = new Date().toISOString().split('T')[0];
-        const analyticsData = {
-            date: today,
-            event,
-            data,
-            timestamp: new Date()
-        };
-
+    async updateApplicationStatus(trackingNumber, status, notes = '') {
         if (this.isConnected) {
             try {
-                await this.collections.analytics.updateOne(
-                    { date: today, event },
-                    {
-                        $inc: { count: 1 },
-                        $push: { data: { $each: [data], $slice: -100 } }
-                    },
-                    { upsert: true }
+                await this.collections.applications.updateOne(
+                    { trackingNumber },
+                    { 
+                        $set: { 
+                            status,
+                            notes,
+                            updatedAt: new Date()
+                        }
+                    }
                 );
+                return { success: true };
             } catch (error) {
-                console.error('❌ Failed to save analytics to MongoDB:', error.message);
+                console.error('❌ Failed to update application status in MongoDB:', error.message);
+                return { success: false, error: error.message };
             }
         }
 
         // Fallback to memory storage
-        const key = `${today}_${event}`;
-        const existing = this.memoryStorage.analytics.get(key) || { count: 0, data: [] };
-        existing.count++;
-        existing.data.push(data);
-        this.memoryStorage.analytics.set(key, existing);
+        const application = this.memoryStorage.applications.get(trackingNumber);
+        if (application) {
+            application.status = status;
+            application.notes = notes;
+            application.updatedAt = new Date();
+            return { success: true };
+        }
+        return { success: false, error: 'Application not found' };
     }
 
     /**
-     * Generate unique tracking number
-     */
-    generateTrackingNumber() {
-        const prefix = 'MESOB';
-        const timestamp = Date.now().toString(36).toUpperCase();
-        const random = Math.random().toString(36).substr(2, 4).toUpperCase();
-        return `${prefix}${timestamp}${random}`;
-    }
-
-    /**
-     * Get database statistics
+     * Statistics and analytics
      */
     async getStats() {
-        const stats = {
-            connected: this.isConnected,
-            storage: this.isConnected ? 'MongoDB' : 'Memory'
-        };
-
         if (this.isConnected) {
             try {
-                stats.users = await this.collections.users.countDocuments();
-                stats.applications = await this.collections.applications.countDocuments();
-                stats.auditLogs = await this.collections.auditLogs.countDocuments();
+                const userCount = await this.collections.users.countDocuments();
+                const applicationCount = await this.collections.applications.countDocuments();
+                return {
+                    storage: 'MongoDB',
+                    totalUsers: userCount,
+                    totalApplications: applicationCount,
+                    isConnected: true
+                };
             } catch (error) {
-                stats.error = error.message;
+                console.error('❌ Failed to get stats from MongoDB:', error.message);
             }
-        } else {
-            stats.users = this.memoryStorage.users.size;
-            stats.applications = this.memoryStorage.applications.size;
-            stats.auditLogs = this.memoryStorage.auditLogs.length;
         }
 
-        return stats;
-    }
-
-    /**
-     * Backup data
-     */
-    async backupData() {
-        if (!this.isConnected) {
-            return {
-                users: Array.from(this.memoryStorage.users.entries()),
-                applications: Array.from(this.memoryStorage.applications.entries()),
-                auditLogs: this.memoryStorage.auditLogs,
-                analytics: Array.from(this.memoryStorage.analytics.entries()),
-                timestamp: new Date().toISOString()
-            };
-        }
-
-        try {
-            const backup = {
-                users: await this.collections.users.find({}).toArray(),
-                applications: await this.collections.applications.find({}).toArray(),
-                auditLogs: await this.collections.auditLogs.find({}).limit(1000).toArray(),
-                analytics: await this.collections.analytics.find({}).toArray(),
-                timestamp: new Date().toISOString()
-            };
-            return backup;
-        } catch (error) {
-            console.error('❌ Backup failed:', error.message);
-            return null;
-        }
-    }
-
-    /**
-     * Health check
-     */
-    async healthCheck() {
-        const health = {
-            database: 'unknown',
-            timestamp: new Date().toISOString()
+        // Fallback to memory storage
+        return {
+            storage: 'Memory',
+            totalUsers: this.memoryStorage.users.size,
+            totalApplications: this.memoryStorage.applications.size,
+            isConnected: false
         };
+    }
 
+    /**
+     * Cleanup and maintenance
+     */
+    async cleanup() {
         if (this.isConnected) {
             try {
-                await this.db.admin().ping();
-                health.database = 'healthy';
+                await this.client.close();
+                console.log('✅ MongoDB connection closed');
             } catch (error) {
-                health.database = 'unhealthy';
-                health.error = error.message;
+                console.error('❌ Failed to close MongoDB connection:', error.message);
             }
-        } else {
-            health.database = 'memory_fallback';
-        }
-
-        return health;
-    }
-
-    /**
-     * Graceful shutdown
-     */
-    async close() {
-        if (this.client) {
-            await this.client.close();
-            console.log('✅ Database connection closed');
         }
     }
 }

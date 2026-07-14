@@ -62,7 +62,7 @@ const translations = {
         om: "📋 Iyyannoolee Koo"
     },
 
-    // Registration Flow
+    // Registration Flow - Simplified (only name and phone)
     registration_prompt: {
         en: "📱 User Registration\n\nTo access full MESOB services, please register with your phone number.\n\nPlease enter your phone number (format: 0912345678 or +251912345678):",
         am: "📱 የተጠቃሚ ምዝገባ\n\nሙሉ የመሶብ አገልግሎቶችን ለመድረስ፣ እባክዎን በስልክ ቁጥርዎ ይመዝገቡ።\n\nእባክዎን የስልክ ቁጥርዎን ያስገቡ (ቅርጸት: 0912345678 ወይም +251912345678):",
@@ -73,30 +73,6 @@ const translations = {
         en: "📝 Please enter your full name:",
         am: "📝 እባክዎን ሙሉ ስምዎን ያስገቡ:",
         om: "📝 Maaloo maqaa guutuu keessan galchaa:"
-    },
-
-    registration_email_prompt: {
-        en: "📧 Please enter your email address:",
-        am: "📧 እባክዎን የኢሜይል አድራሻዎን ያስገቡ:",
-        om: "📧 Maaloo e-mail addreesii keessan galchaa:"
-    },
-
-    registration_id_prompt: {
-        en: "🆔 Please enter your ID number (National ID, Passport, or Work Permit):",
-        am: "🆔 እባክዎን የመታወቂያ ቁጥርዎን ያስገቡ (ብሔራዊ መታወቂያ፣ ፓስፖርት ወይም የስራ ፍቃድ):",
-        om: "🆔 Maaloo lakkoofsa ID keessan galchaa (Ragaa Eenyummaa Biyyaalessaa, Paaspoortii, ykn Hayyama Hojii Dhabdummaa):"
-    },
-
-    registration_address_prompt: {
-        en: "📍 Please enter your address:",
-        am: "📍 እባክዎን አድራሻዎን ያስገቡ:",
-        om: "📍 Maaloo teessoo keessan galchaa:"
-    },
-
-    registration_business_license_prompt: {
-        en: "🏢 Please enter your business license number (if applicable):",
-        am: "🏢 እባክዎን የንግድ ፈቃድ ቁጥርዎን ያስገቡ (ከሚሰራ):",
-        om: "🏢 Maaloo lakkoofsa hayyamaa daldalaa keessan galchaa (yoo ta'e):"
     },
 
     registration_complete: {
@@ -164,6 +140,12 @@ const translations = {
         en: "📄 Document Upload\n\nPlease upload the required documents for your application.\n\nAllowed formats: PDF, DOCX, PNG, JPG, JPEG\nMaximum size: 10MB per file\nMaximum files: 5\n\nUpload your documents now or type 'skip' to continue without documents:",
         am: "📄 የሰነዶች ማስረጊያ\n\nእባክዎን ለማመልከቻዎ የሚያስፈልጉ ሰነዶችን ያስረክ።\n\nየሚፈቀዱ ቅርጸቶች: PDF, DOCX, PNG, JPG, JPEG\nከፍተኛ መጠን: 10MB ለእያንዳንዱ ፋይል\nከፍተኛ ፋይሎች: 5\n\nሰነዶችዎን አሁን ያስረክ ወይም ሰነዶች ሳይኖሩ ለመቀጠር 'skip' ይጻፉ:",
         om: "📄 Erga Sanadootaa\n\nMaaloo sanadoota barbaachisaa iyyannoo keessan gaafachuu.\n\nFaawmaatiin fayyadamuu danda'u: PDF, DOCX, PNG, JPG, JPEG\nHanga guutu: 10MB faayilii tokkoon\nHanga faayilii: 5\n\nSanadoota keessan amma ergaa ykn sanadoota hin qabneef 'skip' dhufuuf barreessaa:"
+    },
+
+    application_submitted: {
+        en: "✅ Application submitted successfully!\n\n📋 Tracking Number: {trackingNumber}\n🏛️ Service: {service}\n\nYour application has been received and is being processed.\nYou can track your application status using the tracking number above.\n\n📞 For inquiries: +251 913 116898\n🌐 Visit: mesobshashe.gov.et",
+        am: "✅ ማመልከቻ በተሳካ ሁኔታ ተልኳል!\n\n📋 የክትትል ቁጥር: {trackingNumber}\n🏛️ አገልግሎት: {service}\n\nማመልከቻዎ ተቀብሎ በሂደት ላይ ነው።\nከላይ ያለውን የክትትል ቁጥር በመጠቀም የማመልከቻዎን ሁኔታ ማከታተል ይችላሉ።\n\n📞 ለጥያቄዎች: +251 913 116898\n🌐 ይጎብኙ: mesobshashe.gov.et",
+        om: "✅ Iyyannoo ergameera!\n\n📋 Lakkoofsa Hordofii: {trackingNumber}\n🏛️ Tajaajila: {service}\n\nIyyannoo keessan fudhatamee hojii irra deddeebi'ama jira.\nLakkoofsa hordofii irratti gaariin haala iyyataa keessanii hordofuu dandeessa.\n\n📞 Gaaffii fuulduraa: +251 913 116898\n🌐 Yuu deemu: mesobshashe.gov.et"
     },
 
     // Admin Dashboard

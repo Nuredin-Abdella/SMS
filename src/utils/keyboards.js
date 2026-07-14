@@ -1,31 +1,27 @@
 /**
  * Keyboard Utilities for MESOB Telegram Bot
- * Creates dynamic keyboard layouts based on user language
+ * Professional, modern keyboards with inline support
  */
 
 const { getTranslation } = require('../config/languages');
 
 /**
- * Create main menu keyboard
+ * Create main menu keyboard - Professional design
  */
 function createMainMenuKeyboard(userLang) {
     return {
         keyboard: [
             [
-                { text: getTranslation('menu_services', userLang) },
-                { text: getTranslation('menu_track', userLang) }
+                { text: '🏛️ Services' },
+                { text: '🔍 Track Application' }
             ],
             [
-                { text: getTranslation('menu_my_applications', userLang) },
-                { text: getTranslation('menu_register', userLang) }
+                { text: '📋 My Applications' },
+                { text: '📱 Register' }
             ],
             [
-                { text: getTranslation('menu_howto', userLang) },
-                { text: getTranslation('menu_faq', userLang) }
-            ],
-            [
-                { text: getTranslation('menu_contact', userLang) },
-                { text: getTranslation('menu_language', userLang) }
+                { text: '❓ Help' },
+                { text: '🌐 Language' }
             ]
         ],
         resize_keyboard: true,
@@ -34,45 +30,111 @@ function createMainMenuKeyboard(userLang) {
 }
 
 /**
- * Create services menu keyboard
+ * Create service pods keyboard - 12 Foddaalee structure
+ */
+function createServicePodsKeyboard(userLang) {
+    return {
+        keyboard: [
+            [
+                { text: '🆔 Identity Documents' },
+                { text: '🏢 Commercial Registration' }
+            ],
+            [
+                { text: '💼 Business Services' },
+                { text: '🏦 Banking Services' }
+            ],
+            [
+                { text: '🏠 Land Services' },
+                { text: '📈 Investment Services' }
+            ],
+            [
+                { text: '📄 Document Services' },
+                { text: '📋 License Services' }
+            ],
+            [
+                { text: '📝 Administrative Services' },
+                { text: '✅ Quality Assurance' }
+            ],
+            [
+                { text: '🏗️ Construction Services' },
+                { text: '⭐ Special Services' }
+            ],
+            [
+                { text: '🔙 Back to Menu' }
+            ]
+        ],
+        resize_keyboard: true,
+        one_time_keyboard: false
+    };
+}
+
+/**
+ * Create inline keyboard for service pods
+ */
+function createInlineServiceKeyboard(podServices) {
+    const buttons = podServices.map(service => ({
+        text: `${service.emoji} ${service.name}`,
+        callback_data: `service_${service.name.toLowerCase().replace(/\s+/g, '_')}`
+    }));
+
+    // Group buttons in rows of 2
+    const rows = [];
+    for (let i = 0; i < buttons.length; i += 2) {
+        if (i + 1 < buttons.length) {
+            rows.push([buttons[i], buttons[i + 1]]);
+        } else {
+            rows.push([buttons[i]]);
+        }
+    }
+
+    // Add back button
+    rows.push([{ text: '🔙 Back to Menu', callback_data: 'back_to_menu' }]);
+
+    return {
+        inline_keyboard: rows
+    };
+}
+
+/**
+ * Create services menu keyboard - Organized like MESOB website categories
  */
 function createServicesKeyboard(userLang) {
     return {
         keyboard: [
             [
-                { text: getTranslation('service_national_id', userLang) },
-                { text: getTranslation('service_passport', userLang) }
+                { text: '🆔 National ID' },
+                { text: '🛂 Passport' }
             ],
             [
-                { text: getTranslation('service_vital_registration', userLang) },
-                { text: getTranslation('service_civil_status', userLang) }
+                { text: '📋 Vital Registration' },
+                { text: '👤 Civil Status' }
             ],
             [
-                { text: getTranslation('service_business_licensing', userLang) },
-                { text: getTranslation('service_cooperatives', userLang) }
+                { text: '🏢 Business License' },
+                { text: '🤝 Cooperatives' }
             ],
             [
-                { text: getTranslation('service_revenue', userLang) },
-                { text: getTranslation('service_land', userLang) }
+                { text: '💰 Revenue Services' },
+                { text: '🏠 Land Services' }
             ],
             [
-                { text: getTranslation('service_investment', userLang) },
-                { text: getTranslation('service_document_auth', userLang) }
+                { text: '💼 Investment' },
+                { text: '📄 Document Auth' }
             ],
             [
-                { text: getTranslation('service_transport', userLang) },
-                { text: getTranslation('service_construction', userLang) }
+                { text: '🚗 Transport' },
+                { text: '🏗️ Construction' }
             ],
             [
-                { text: getTranslation('service_sanitation', userLang) },
-                { text: getTranslation('service_social', userLang) }
+                { text: '🧹 Sanitation' },
+                { text: '🛎️ Social Services' }
             ],
             [
-                { text: getTranslation('service_urban_planning', userLang) },
-                { text: getTranslation('service_elections', userLang) }
+                { text: '🗺️ Urban Planning' },
+                { text: '🗳️ Elections' }
             ],
             [
-                { text: getTranslation('back_to_menu', userLang) }
+                { text: '🔙 Back to Menu' }
             ]
         ],
         resize_keyboard: true,
@@ -81,44 +143,14 @@ function createServicesKeyboard(userLang) {
 }
 
 /**
- * Create FAQ menu keyboard
- */
-function createFAQKeyboard(userLang) {
-    return {
-        keyboard: [
-            [
-                { text: getTranslation('faq_documents', userLang) },
-                { text: getTranslation('faq_fees', userLang) }
-            ],
-            [
-                { text: getTranslation('faq_timing', userLang) },
-                { text: getTranslation('faq_general', userLang) }
-            ],
-            [
-                { text: getTranslation('mesob_general', userLang) },
-                { text: getTranslation('mesob_services', userLang) }
-            ],
-            [
-                { text: getTranslation('mesob_support', userLang) }
-            ],
-            [
-                { text: getTranslation('back_to_menu', userLang) }
-            ]
-        ],
-        resize_keyboard: true,
-        one_time_keyboard: false
-    };
-}
-
-/**
- * Create language selection keyboard
+ * Create language selection keyboard with inline buttons
  */
 function createLanguageKeyboard() {
     return {
         keyboard: [
-            [{ text: '1️⃣ English' }],
-            [{ text: '2️⃣ አማርኛ (Amharic)' }],
-            [{ text: '3️⃣ Afaan Oromo' }]
+            [{ text: '🇺🇸 English' }],
+            [{ text: '🇪🇹 አማርኛ' }],
+            [{ text: '🇪🇹 Afaan Oromo' }]
         ],
         resize_keyboard: true,
         one_time_keyboard: true
@@ -126,128 +158,19 @@ function createLanguageKeyboard() {
 }
 
 /**
- * Create inline keyboard
+ * Create inline language selection keyboard
  */
-function createInlineKeyboard(userLang, actions) {
-    const keyboard = actions.map(action => [
-        {
-            text: getTranslation(action.textKey, userLang),
-            callback_data: action.callbackData
-        }
-    ]);
-
-    return {
-        inline_keyboard: keyboard
-    };
-}
-
-/**
- * Create back button keyboard
- */
-function createBackKeyboard(userLang) {
-    return {
-        keyboard: [
-            [{ text: getTranslation('back_to_menu', userLang) }]
-        ],
-        resize_keyboard: true,
-        one_time_keyboard: false
-    };
-}
-
-/**
- * Create yes/no confirmation keyboard
- */
-function createConfirmationKeyboard(userLang) {
-    const yesText = {
-        en: '✅ Yes',
-        am: '✅ አዎ',
-        om: '✅ Eeyyee'
-    };
-
-    const noText = {
-        en: '❌ No',
-        am: '❌ አይ',
-        om: '❌ Lakki'
-    };
-
+function createInlineLanguageKeyboard() {
     return {
         inline_keyboard: [
             [
-                { text: yesText[userLang], callback_data: 'confirm_yes' },
-                { text: noText[userLang], callback_data: 'confirm_no' }
+                { text: '🇺🇸 English', callback_data: 'lang_en' },
+                { text: '🇪ᇹ አማርኛ', callback_data: 'lang_am' }
+            ],
+            [
+                { text: '🇪🇹 Afaan Oromo', callback_data: 'lang_om' }
             ]
         ]
-    };
-}
-
-/**
- * Remove keyboard
- */
-function removeKeyboard() {
-    return {
-        remove_keyboard: true
-    };
-}
-
-/**
- * Create contact sharing keyboard
- */
-function createContactKeyboard(userLang) {
-    const shareContactText = {
-        en: '📞 Share Contact',
-        am: '📞 መገናኛ ያካፍሉ',
-        om: '📞 Quunnamtii Qooddaa'
-    };
-
-    const skipText = {
-        en: '⏭️ Skip',
-        am: '⏭️ ዝለል',
-        om: '⏭️ Darbuu'
-    };
-
-    return {
-        keyboard: [
-            [
-                {
-                    text: shareContactText[userLang],
-                    request_contact: true
-                }
-            ],
-            [{ text: skipText[userLang] }]
-        ],
-        resize_keyboard: true,
-        one_time_keyboard: true
-    };
-}
-
-/**
- * Create location sharing keyboard
- */
-function createLocationKeyboard(userLang) {
-    const shareLocationText = {
-        en: '📍 Share Location',
-        am: '📍 አካባቢ ያካፍሉ',
-        om: '📍 Bakka Qooddaa'
-    };
-
-    const skipText = {
-        en: '⏭️ Skip',
-        am: '⏭️ ዝለል',
-        om: '⏭️ Darbuu'
-    };
-
-    return {
-        keyboard: [
-            [
-                {
-                    text: shareLocationText[userLang],
-                    request_location: true
-                }
-            ],
-            [{ text: skipText[userLang] }]
-        ],
-        resize_keyboard: true,
-        one_time_keyboard: true
     };
 }
 
@@ -255,45 +178,18 @@ function createLocationKeyboard(userLang) {
  * Create admin dashboard keyboard
  */
 function createAdminDashboardKeyboard(userLang) {
-    const { getTranslation } = require('../config/languages');
-    
     return {
         keyboard: [
             [
-                { text: getTranslation('admin_view_applications', userLang) },
-                { text: getTranslation('admin_view_users', userLang) }
+                { text: '📋 Applications' },
+                { text: '👥 Users' }
             ],
             [
-                { text: getTranslation('admin_statistics', userLang) },
-                { text: getTranslation('admin_settings', userLang) }
+                { text: '📊 Statistics' },
+                { text: '⚙️ Settings' }
             ],
             [
-                { text: getTranslation('admin_logout', userLang) }
-            ]
-        ],
-        resize_keyboard: true,
-        one_time_keyboard: false
-    };
-}
-
-/**
- * Create admin application management keyboard
- */
-function createAdminApplicationKeyboard(userLang) {
-    const { getTranslation } = require('../config/languages');
-    
-    return {
-        keyboard: [
-            [
-                { text: '✅ Approve' },
-                { text: '❌ Reject' }
-            ],
-            [
-                { text: '📝 Add Note' },
-                { text: '👤 View User' }
-            ],
-            [
-                { text: getTranslation('admin_back', userLang) }
+                { text: '🚪 Logout' }
             ]
         ],
         resize_keyboard: true,
@@ -304,14 +200,9 @@ function createAdminApplicationKeyboard(userLang) {
 module.exports = {
     createMainMenuKeyboard,
     createServicesKeyboard,
-    createFAQKeyboard,
     createLanguageKeyboard,
-    createInlineKeyboard,
-    createBackKeyboard,
-    createConfirmationKeyboard,
-    removeKeyboard,
-    createContactKeyboard,
-    createLocationKeyboard,
     createAdminDashboardKeyboard,
-    createAdminApplicationKeyboard
+    createServicePodsKeyboard,
+    createInlineServiceKeyboard,
+    createInlineLanguageKeyboard
 };

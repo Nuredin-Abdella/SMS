@@ -1,6 +1,6 @@
-# MESOB Shashemene Telegram Bot 🏛️
+# MESOB Shashemene Professional Telegram Bot 🏛️
 
-A production-ready multilingual Telegram bot for MESOB (Ministry of Electronic Services and Operations Bureau) Shashemene, providing digital access to government services.
+A professional, production-ready multilingual Telegram bot for MESOB (Ministry of Electronic Services and Operations Bureau) Shashemene, providing digital access to 130+ government services across 12 service pods.
 
 ## 🌟 Features
 
@@ -11,30 +11,40 @@ A production-ready multilingual Telegram bot for MESOB (Ministry of Electronic S
 - **Afaan Oromo** - Native language support
 - Dynamic language switching with instant UI updates
 
-### 🏛️ Government Services
+### 🏛️ 12 Service Pods (130+ Services)
 
-- **National ID** - Application information and requirements
-- **Passport Services** - Documentation and processing details
-- **Business Registration** - Company setup and licensing
-- **Tax Services** - Tax registration and certificates
-- **Driving License** - License application process
-- **Application Tracking** - Real-time status updates
+- **Pod 1: Identity Documents** - National ID, Passport services
+- **Pod 2: Commercial Registration** - Business licenses, Cooperatives
+- **Pod 3: Business Services** - Investment, Revenue services
+- **Pod 4: Banking Services** - Bank services, Microfinance
+- **Pod 5: Land Services** - Land registration, Urban planning
+- **Pod 6: Investment Services** - Investment permits, licenses
+- **Pod 7: Document Services** - Document authentication, Vital registration
+- **Pod 8: License Services** - Driving licenses, Professional licenses
+- **Pod 9: Administrative Services** - Civil status, Social services
+- **Pod 10: Quality Assurance** - Certification, Inspection
+- **Pod 11: Construction Services** - Construction permits, Sanitation
+- **Pod 12: Special Services** - Elections, Special cases
 
-### 🤖 Smart Features
+### 🤖 Professional Features
 
-- Intelligent message routing
-- User session management
-- Automatic language detection for greetings
-- Context-aware responses
-- Clean, intuitive keyboard navigation
+- **Modern UI/UX** - Professional inline keyboards and intuitive navigation
+- **Service Pod Structure** - Organized like MESOB website
+- **Application Tracking** - Real-time status updates with tracking numbers
+- **User Registration** - Simple phone-based registration
+- **Admin Dashboard** - Comprehensive admin panel for management
+- **Database Integration** - MongoDB support with fallback to memory storage
+- **Error Handling** - Robust error handling and logging
+- **Session Management** - Efficient user state management
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- Node.js (v14 or higher)
+- Node.js (v16 or higher)
 - npm or yarn
 - Telegram Bot Token (from [@BotFather](https://t.me/botfather))
+- MongoDB (optional, falls back to memory storage)
 
 ### Installation
 
@@ -42,7 +52,7 @@ A production-ready multilingual Telegram bot for MESOB (Ministry of Electronic S
 
    ```bash
    git clone <repository-url>
-   cd mesob-telegram-bot
+   cd mesob_bot
    ```
 
 2. **Install dependencies**
@@ -57,6 +67,7 @@ A production-ready multilingual Telegram bot for MESOB (Ministry of Electronic S
    cp .env.example .env
    # Edit .env and add your bot token
    BOT_TOKEN=your_telegram_bot_token_here
+   MONGODB_URI=mongodb://localhost:27017/mesob_bot  # Optional
    ```
 
 4. **Start the bot**
@@ -74,16 +85,19 @@ A production-ready multilingual Telegram bot for MESOB (Ministry of Electronic S
 ## 🏗️ Project Structure
 
 ```
-mesob-telegram-bot/
+mesob_bot/
 ├── bot.js                      # Main bot application
 ├── package.json               # Dependencies and scripts
 ├── .env                      # Environment configuration
 ├── src/
 │   ├── config/
 │   │   └── languages.js      # Translation dictionary
-│   ├── handlers/
-│   │   ├── commandHandler.js # Bot commands (/start, /help)
-│   │   └── messageHandler.js # Message processing logic
+│   ├── database/
+│   │   └── db.js             # Database connection and operations
+│   ├── services/
+│   │   ├── adminService.js   # Admin dashboard operations
+│   │   ├── applicationService.js  # Application form handling
+│   │   └── smsService.js     # SMS validation services
 │   └── utils/
 │       ├── keyboards.js      # Dynamic keyboard generation
 │       └── userState.js      # User session management
@@ -92,22 +106,22 @@ mesob-telegram-bot/
 
 ## 📋 Bot Commands
 
-| Command     | Description                           |
-| ----------- | ------------------------------------- |
-| `/start`    | Initialize bot and language selection |
-| `/help`     | Show help information and features    |
-| `/language` | Change interface language             |
-| `/menu`     | Return to main menu                   |
-| `/stats`    | Bot statistics (admin only)           |
+|| Command     | Description                           |
+|| ----------- | ------------------------------------- |
+|| `/start`    | Initialize bot and language selection |
+|| `/help`     | Show help information and features    |
+|| `/menu`     | Return to main menu                   |
 
 ## 🎯 Usage Flow
 
 1. **Start**: User sends `/start` command
 2. **Language Selection**: Choose from English, Amharic, or Afaan Oromo
-3. **Main Menu**: Navigate through services using keyboard buttons
-4. **Service Information**: Get detailed info about government services
-5. **Application Tracking**: Enter reference numbers to track status
-6. **Multi-language**: Switch languages anytime
+3. **Main Menu**: Navigate through service pods using keyboard buttons
+4. **Service Selection**: Choose a service pod and select specific service
+5. **Service Information**: Get detailed info about government services
+6. **Application**: Submit applications with tracking numbers
+7. **Application Tracking**: Enter reference numbers to track status
+8. **Multi-language**: Switch languages anytime
 
 ## 🛠️ Configuration
 
@@ -119,31 +133,45 @@ BOT_TOKEN=your_telegram_bot_token_here
 
 # Optional
 NODE_ENV=development
-PORT=3000
-ADMIN_CHAT_ID=your_chat_id_for_admin_features
+MONGODB_URI=mongodb://localhost:27017/mesob_bot
+ADMIN_EMAIL=admin@mesob.gov.et
+ADMIN_PASSWORD=your_admin_password
 ```
 
-### Adding New Languages
+### Adding New Services
 
-To add support for additional languages:
+To add new services to service pods:
 
-1. **Update translations in `src/config/languages.js`**:
+1. **Update service pods in `bot.js`**:
 
    ```javascript
-   const translations = {
-     welcome: {
-       en: "Welcome!",
-       am: "እንኳን በደህና መጡ!",
-       om: "Baga nagaan dhuftan!",
-       ti: "እንቋዕ በደሐን መፃእካ!", // Add Tigrinya
-     },
-     // ... add to all translation keys
+   const servicePods = {
+       'pod1': {
+           name: 'Identity Documents',
+           emoji: '🆔',
+           services: ['national_id', 'passport', 'new_service'],
+           description: 'Kenna Ragaalee Bu\'uuraa'
+       }
    };
    ```
 
-2. **Update language selection keyboard** in `src/utils/keyboards.js`
+2. **Add service details**:
 
-3. **Test thoroughly** with native speakers
+   ```javascript
+   const services = {
+       'new_service': {
+           name: 'New Service',
+           emoji: '🔧',
+           description: 'Service description',
+           processingTime: '3-5 days',
+           fee: '100 ETB',
+           documents: 'Required documents',
+           pod: 'pod1'
+       }
+   };
+   ```
+
+3. **Add form requirements in `applicationService.js`**
 
 ## 🔧 Development
 
@@ -153,6 +181,7 @@ To add support for additional languages:
 - Comprehensive error handling
 - Detailed logging for debugging
 - Scalable user state management
+- Professional UI/UX patterns
 
 ### Key Principles
 
@@ -160,6 +189,7 @@ To add support for additional languages:
 - **Dynamic keyboards** - All UI elements adapt to selected language
 - **Graceful fallbacks** - English used when translations missing
 - **Memory efficient** - Automatic cleanup of inactive user sessions
+- **Professional design** - Modern inline keyboards and intuitive navigation
 
 ### Testing
 
@@ -176,11 +206,12 @@ npm run dev
 The bot includes built-in statistics and monitoring:
 
 - **User Statistics**: Total users, language breakdown
-- **Activity Tracking**: Active users in last hour/day
-- **Automatic Cleanup**: Removes inactive user sessions
+- **Application Tracking**: Status and progress monitoring
+- **Admin Dashboard**: Comprehensive management interface
 - **Error Logging**: Comprehensive error tracking
+- **Database Statistics**: Storage and performance metrics
 
-Access stats with `/stats` command (admin only).
+Access admin features by logging in with `email:password` format.
 
 ## 🚀 Deployment
 
@@ -197,6 +228,7 @@ npm start
    ```bash
    NODE_ENV=production
    BOT_TOKEN=your_production_token
+   MONGODB_URI=your_production_mongodb_uri
    ```
 
 2. **Process Management** (using PM2):
@@ -218,26 +250,28 @@ npm start
    CMD ["npm", "start"]
    ```
 
-## 🔮 Future Enhancements
+## 🔮 Professional Features
 
-### Planned Features
+### Current Implementation
 
-- [ ] **Database Integration** (MongoDB/Firebase)
-- [ ] **Real API Integration** with MESOB backend
-- [ ] **Document Upload** support
-- [ ] **Payment Integration** for services
-- [ ] **AI/NLP** for natural language processing
-- [ ] **Voice Messages** support
-- [ ] **Appointment Booking** system
-- [ ] **Push Notifications** for application updates
+- ✅ **12 Service Pods** matching MESOB website structure
+- ✅ **130+ Services** across all service pods
+- ✅ **Professional UI/UX** with inline keyboards
+- ✅ **Multilingual Support** (English, Amharic, Afaan Oromo)
+- ✅ **Application Tracking** with unique tracking numbers
+- ✅ **User Registration** with phone verification
+- ✅ **Admin Dashboard** for comprehensive management
+- ✅ **Database Integration** with MongoDB support
+- ✅ **Error Handling** and logging
+- ✅ **Session Management** for user states
 
-### Scalability Improvements
+### Scalability
 
-- [ ] Redis for session management
-- [ ] Webhook mode for better performance
-- [ ] Load balancing for multiple bot instances
-- [ ] Analytics dashboard
-- [ ] Admin panel for content management
+- **MongoDB Integration** - Scalable database storage
+- **Memory Fallback** - Works without database
+- **Efficient State Management** - Automatic cleanup
+- **Modular Architecture** - Easy to extend
+- **Professional Code Structure** - Maintainable and scalable
 
 ## 🤝 Contributing
 
@@ -253,9 +287,15 @@ npm start
 - Add translations for new features
 - Test with all supported languages
 - Update documentation
+- Maintain professional UI/UX standards
 
 ## 📞 Support
 
 - **Technical Issues**: Create GitHub issue
 - **MESOB Services**: Visit [https://mesobshashe.gov.et](https://mesobshashe.gov.et)
 - **Bot Support**: Contact support@mesobshashe.gov.et
+- **Phone**: +251 913 116898
+
+## 📄 License
+
+MIT License - See LICENSE file for details

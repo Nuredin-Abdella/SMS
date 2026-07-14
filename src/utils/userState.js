@@ -85,9 +85,25 @@ function clearAdminSession(userId) {
             ...existingState, 
             isAdmin: false, 
             adminStep: null,
+            adminData: null,
             lastActivity: new Date() 
         });
     }
+}
+
+function setAdminData(userId, data) {
+    const userIdStr = userId.toString();
+    const existingState = userStates.get(userIdStr) || {};
+    userStates.set(userIdStr, { 
+        ...existingState, 
+        adminData: { ...existingState.adminData, ...data },
+        lastActivity: new Date() 
+    });
+}
+
+function getAdminData(userId) {
+    const userState = userStates.get(userId.toString());
+    return userState?.adminData || {};
 }
 
 function initializeUserStateManager() {
@@ -120,5 +136,7 @@ module.exports = {
     setAdminStep,
     getAdminStep,
     clearAdminSession,
+    setAdminData,
+    getAdminData,
     initializeUserStateManager
 };

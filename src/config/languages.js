@@ -45,9 +45,9 @@ const translations = {
     },
 
     menu_howto: {
-        en: "📖 How to Use MESOB",
-        am: "📖 መሶብን እንዴት መጠቀም",
-        om: "📖 Akkamitti MESOB Fayyadamuu"
+        en: "❓ Help",
+        am: "❓ እርዳታ",
+        om: "❓ Gargaarsa"
     },
 
     menu_register: {
@@ -195,6 +195,566 @@ const translations = {
         en: "⚙️ Settings",
         am: "⚙️ ቅንብሮች",
         om: "⚙️ Seettiwwan"
+    },
+
+    admin_search: {
+        en: "🔍 Search",
+        am: "🔍 ፍለጋ",
+        om: "🔍 Barbaaduu"
+    },
+
+    admin_reports: {
+        en: "📈 Reports",
+        am: "📈 ሪፖርቶች",
+        om: "📈 Ripootota"
+    },
+
+    admin_broadcast: {
+        en: "📢 Broadcast",
+        am: "📢 ማስተላለፍ",
+        om: "📢 Adeemsaa"
+    },
+
+    admin_manage_services: {
+        en: "🏛️ Manage Services",
+        am: "🏛️ አገልግሎቶች ያስተዳዳሩ",
+        om: "🏛️ Tajaajiloota Balaa'uu"
+    },
+
+    admin_view_pending: {
+        en: "⏳ Pending Applications",
+        am: "⏳ የተወሰኑ ማመልከቻዎች",
+        om: "⏳ Iyyannoolee Jiran"
+    },
+
+    admin_view_approved: {
+        en: "✅ Approved Applications",
+        am: "✅ የተፈቀዱ ማመልከቻዎች",
+        om: "✅ Iyyannoolee Ergame"
+    },
+
+    admin_view_rejected: {
+        en: "❌ Rejected Applications",
+        am: "❌ የተከለሉ ማመልከቻዎች",
+        om: "❌ Iyyannoolee Cufame"
+    },
+
+    admin_search_prompt: {
+        en: "🔍 Search Applications\n\nEnter tracking number, service name, or user name:",
+        am: "🔍 ማመልከቻዎችን ፍለግ\n\nየክትትል ቁጥር፣ የአገልግሎት ስም ወይም የተጠቃሚ ስም ያስገቡ:",
+        om: "🔍 Iyyannoolee Barbaaduu\n\nLakkoofsa wabiinsa, maqaa tajaajilaa ykn maqaa fayyadamaa galchaa:"
+    },
+
+    admin_application_details: {
+        en: "📋 Application Details\n\nTracking Number: {trackingNumber}\nService: {service}\nStatus: {status}\n\n👤 Applicant Information:\nName: {fullName}\nPhone: {phone}\nEmail: {email}\nID: {idNumber}\nAddress: {address}\n\n📄 Documents: {documentCount}\n\n📝 Notes: {notes}",
+        am: "📋 የማመልከቻ ዝርዝሮች\n\nየማጣቀሻ ቁጥር: {trackingNumber}\nአገልግሎት: {service}\nሁኔታ: {status}\n\n👤 የአመራጭ መረጃ:\nስም: {fullName}\nስልክ: {phone}\nኢሜይል: {email}\nID: {idNumber}\nአድራሻ: {address}\n\n📄 ሰነዶች: {documentCount}\n\n📝 ማስታወሻዎች: {notes}",
+        om: "📝 Maqaa Iyyannoo\n\nLakkoofsa Wabiinsa: {trackingNumber}\nTajaajila: {service}\nHaala: {status}\n\n👤 Odeeffannoo Filataa:\nMaqaa: {fullName}\nBilbila: {phone}\nEmail: {email}\nID: {idNumber}\nTeessoo: {address}\n\n📄 Sanadoota: {documentCount}\n\n📝 Yaadameewwan: {notes}"
+    },
+
+    admin_approve_application: {
+        en: "✅ Application Approved\n\nTracking Number: {trackingNumber}\nStatus changed to: Approved",
+        am: "✅ ማመልከቻ ተፈቅዷል\n\nየማጣቀሻ ቁጥር: {trackingNumber}\nሁኔታ ቀይሯል: ተፈቅዷል",
+        om: "✅ Iyyannoo Ergameera\n\nLakkoofsa Wabiinsa: {trackingNumber}\nHaala jijjiirameera: Ergameera"
+    },
+
+    admin_reject_application: {
+        en: "❌ Application Rejected\n\nTracking Number: {trackingNumber}\nStatus changed to: Rejected",
+        am: "❌ ማመልከቻ ተከለከለ\n\nየማጣቀሻ ቁጥር: {trackingNumber}\nሁኔታ ቀይሯል: ተከለከለ",
+        om: "❌ Iyyannoo Cufameera\n\nLakkoofsa Wabiinsa: {trackingNumber}\nHaala jijjiirameera: Cufameera"
+    },
+
+    admin_add_note: {
+        en: "📝 Add Note\n\nPlease enter your note for application {trackingNumber}:",
+        am: "📝 ማስታወሻ ይጨምሩ\n\nእባክዎን ማስታወሻዎን ያስገቡ ለማመልከቻ {trackingNumber}:",
+        om: "📝 Yaadamee Qoodaa\n\nMaaloo yaadamee keessan galchaa iyyannoo {trackingNumber}:"
+    },
+
+    admin_note_added: {
+        en: "✅ Note added successfully",
+        am: "✅ ማስታወሻ ተጨምረዋል",
+        om: "✅ Yaadamee guutameera qoodameera"
+    },
+
+    admin_statistics_summary: {
+        en: "📊 MESOB Statistics\n\n👥 Total Users: {totalUsers}\n📋 Total Applications: {totalApplications}\n⏳ Pending: {pending}\n✅ Approved: {approved}\n❌ Rejected: {rejected}\n\n🏛️ Service Breakdown:\n{serviceBreakdown}",
+        am: "📊 የመሶብ ስታቲስቲክስ\n\n👥 ጠቅላላ ተጠቃሚዎች: {totalUsers}\n📋 ጠቅላላ ማመልከቻዎች: {totalApplications}\n⏳ በመጠባበብ ላይ: {pending}\n✅ ተፈቅዷል: {approved}\n❌ ተከለከለ: {rejected}\n\n🏛️ የአገልግሎት ምዝገት:\n{serviceBreakdown}",
+        om: "📊 Tiijoormaawwan MESOB\n\n👥 Fayyadamaa Waliigalaa: {totalUsers}\n📋 Iyyannoolee Waliigalaa: {totalApplications}\n⏳ Jiraa: {pending}\n✅ Ergameera: {approved}\n❌ Cufameera: {rejected}\n\n🏛️ Qoodama Tajaajilaa:\n{serviceBreakdown}"
+    },
+
+    admin_action_prompt: {
+        en: "🔧 Application Actions\n\n1. ✅ Approve\n2. ❌ Reject\n3. 📝 Add Note\n4. 🔙 Back to Dashboard\n\nSelect an action:",
+        am: "🔧 የማመልከቻ እርምጮች\n\n1. ✅ ፍቀድ\n2. ❌ ክልክ\n3. 📝 ማስታወሻ አክልፍ\n4. 🔙 ወደ ዳሽቦርድ ተመለስ\n\nእርምጮች ይምረጡ:",
+        om: "🔧 Hojii Iyyannoo\n\n1. ✅ Ergaa\n2. ❌ Cufi\n3. 📝 Yaadamee Qoodaa\n4. 🔙 Deebi'ii Dashboard\n\nHojii filadhaa:"
+    },
+
+    admin_broadcast_prompt: {
+        en: "📢 Broadcast Message\n\nEnter the message to send to all users:",
+        am: "📢 መልእክት ማስተላለፍ\n\nለሁሉም ተጠቃሚዎች የሚልክ መልእክት ያስገቡ:",
+        om: "📢 Adeemsaa Morkii\n\nMorkii fayyadamaa hundaaf ergamu galchaa:"
+    },
+
+    admin_broadcast_sent: {
+        en: "✅ Broadcast sent to {count} users",
+        am: "✅ መልእክት ተልኳል ለ {count} ተጠቃሚዎች",
+        om: "✅ Adeemsii ergame fayyadamaa {count}tti"
+    },
+
+    admin_user_info: {
+        en: "👤 User Information\n\nName: {name}\nPhone: {phone}\nEmail: {email}\nRegistered: {date}\nApplications: {count}",
+        am: "👤 የተጠቃሚ መረጃ\n\nስም: {name}\nስልክ: {phone}\nኢሜይል: {email}\nተመዝገበ: {date}\nማመልከቻዎች: {count}",
+        om: "👤 Odeeffannoo Fayyadamaa\n\nMaqaa: {name}\nBilbila: {phone}\nEmail: {email}\nGalmaa'eera: {date}\nIyyannoolee: {count}"
+    },
+
+    // Service Pods (Foddaalee)
+    service_pods_title: {
+        en: "🏛️ MESOB Service Pods\n\nSelect a service pod to explore:",
+        am: "🏛️ የመሶብ አገልግሎት ፎዳሎች\n\nአገልግሎት ፎዳ ይምረጡ:",
+        om: "🏛️ Foddaalee Tajaajila MESOB\n\nFoddaa tajaajila filadhaa:"
+    },
+
+    pod1_name: {
+        en: "Identity Documents",
+        am: "የማለያ ሰነዶች",
+        om: "Dokumentoota Ragaa"
+    },
+    pod1_description: {
+        en: "Kenna Ragaalee Bu'uuraa\n7 Services",
+        am: "የመለያ ሰነዶች አገልግሎት\n7 አገልግሎቶች",
+        om: "Kenna Ragaalee Bu'uuraa\n7 Tajaajiloota"
+    },
+
+    pod2_name: {
+        en: "Commercial Registration",
+        am: "የንግድ ምዝገባ",
+        om: "Galmee Galii"
+    },
+    pod2_description: {
+        en: "Sassaabbii Galii fi Simannaa\n25 Services",
+        am: "የንግድ ምዝገባ እና ፈቃድ\n25 አገልግሎቶች",
+        om: "Sassaabbii Galii fi Simannaa\n25 Tajaajiloota"
+    },
+
+    pod3_name: {
+        en: "Business Services",
+        am: "የንግድ አገልግሎቶች",
+        om: "Tajaajila Daldalaa"
+    },
+    pod3_description: {
+        en: "Tajaajila Hayyamaa Daldala\n4 Services",
+        am: "የንግድ አገልግሎቶች\n4 አገልግሎቶች",
+        om: "Tajaajila Hayyamaa Daldala\n4 Tajaajiloota"
+    },
+
+    pod4_name: {
+        en: "Banking Services",
+        am: "የባንክ አገልግሎቶች",
+        om: "Tajaajila Baankii"
+    },
+    pod4_description: {
+        en: "Tajaajila Baankii Idilee\n20 Services",
+        am: "የባንክ አገልግሎቶች\n20 አገልግሎቶች",
+        om: "Tajaajila Baankii Idilee\n20 Tajaajiloota"
+    },
+
+    pod5_name: {
+        en: "Land Services",
+        am: "የመሬት አገልግሎቶች",
+        om: "Tajaajila Lafaa"
+    },
+    pod5_description: {
+        en: "Kenna Tajaajila Lafaa\n9 Services",
+        am: "የመሬት አገልግሎቶች\n9 አገልግሎቶች",
+        om: "Kenna Tajaajila Lafaa\n9 Tajaajiloota"
+    },
+
+    pod6_name: {
+        en: "Investment Services",
+        am: "የኢንቨስትመንት አገልግሎቶች",
+        om: "Tajaajila Investimentii"
+    },
+    pod6_description: {
+        en: "Kenna Tajaajila Investimentii\n20 Services",
+        am: "የኢንቨስትመንት አገልግሎቶች\n20 አገልግሎቶች",
+        om: "Kenna Tajaajila Investimentii\n20 Tajaajiloota"
+    },
+
+    pod7_name: {
+        en: "Document Services",
+        am: "የሰነድ አገልግሎቶች",
+        om: "Tajaajila Sanadootaa"
+    },
+    pod7_description: {
+        en: "Tajaajila Sanadootaa fi Waliigaltee\n15 Services",
+        am: "የሰነድ አገልግሎቶች\n15 አገልግሎቶች",
+        om: "Tajaajila Sanadootaa fi Waliigaltee\n15 Tajaajiloota"
+    },
+
+    pod8_name: {
+        en: "License Services",
+        am: "የፈቃድ አገልግሎቶች",
+        om: "Tajaajila Xalayaa"
+    },
+    pod8_description: {
+        en: "Kenna Xalayaa Deggersa\n4 Services",
+        am: "የፈቃድ አገልግሎቶች\n4 አገልግሎቶች",
+        om: "Kenna Xalayaa Deggersa\n4 Tajaajiloota"
+    },
+
+    pod9_name: {
+        en: "Administrative Services",
+        am: "የአስተዳደር አገልግሎቶች",
+        om: "Tajaajiloota Hojii Eegaa"
+    },
+    pod9_description: {
+        en: "Tajaajiloota Dhimmoota Bulchiinsaa\n8 Services",
+        am: "የአስተዳደር አገልግሎቶች\n8 አገልግሎቶች",
+        om: "Tajaajiloota Dhimmoota Bulchiinsaa\n8 Tajaajiloota"
+    },
+
+    pod10_name: {
+        en: "Quality Assurance",
+        am: "የጥራት ማረጋገጫ",
+        om: "Mirkaneessa Ogummaa"
+    },
+    pod10_description: {
+        en: "Mirkaneessa Gahuumsa Ogummaa\n11 Services",
+        am: "የጥራት ማረጋገጫ\n11 አገልግሎቶች",
+        om: "Mirkaneessa Gahuumsa Ogummaa\n11 Tajaajiloota"
+    },
+
+    pod11_name: {
+        en: "Construction Services",
+        am: "የግንባት አገልግሎቶች",
+        om: "Tajaajila Ijaarsaa"
+    },
+    pod11_description: {
+        en: "Hayyamaa Ogummaa fi Ijaarsaa\n3 Services",
+        am: "የግንባት አገልግሎቶች\n3 አገልግሎቶች",
+        om: "Hayyamaa Ogummaa fi Ijaarsaa\n3 Tajaajiloota"
+    },
+
+    pod12_name: {
+        en: "Special Services",
+        am: "ልዩ አገልግሎቶች",
+        om: "Tajaajila Adda Addaa"
+    },
+    pod12_description: {
+        en: "Kaffaltii Adda Addaa\nVarious Services",
+        am: "ልዩ አገልግሎቶች\nየተለያዩ አገልግሎቶች",
+        om: "Kaffaltii Adda Addaa\nTajaajiloota Adda Addaa"
+    },
+
+    // Individual Services
+    service_national_id: {
+        en: "National ID",
+        am: "ብሔራዊ መታወቂያ",
+        om: "Ragaa Eenyummaa Biyyaalessaa"
+    },
+    service_passport: {
+        en: "Passport",
+        am: "ፓስፖርት",
+        om: "Paaspoortii"
+    },
+    service_business_license: {
+        en: "Business License",
+        am: "የንግድ ፈቃድ",
+        om: "Hayyamaa Daldalaa"
+    },
+    service_cooperatives: {
+        en: "Cooperatives",
+        am: "የትብልት ማህበራት",
+        om: "Mi'iraawwan"
+    },
+    service_investment: {
+        en: "Investment",
+        am: "ኢንቨስትመንት",
+        om: "Investimentii"
+    },
+    service_revenue: {
+        en: "Revenue Services",
+        am: "የገቢ አገልግሎቶች",
+        om: "Tajaajila Qophii"
+    },
+    service_vital_registration: {
+        en: "Vital Registration",
+        am: "የአስተዳደር ምዝገባ",
+        om: "Mirkaneessuu Dhiiraa"
+    },
+    service_civil_status: {
+        en: "Civil Status",
+        am: "የእስራዊ ሁኔታ",
+        om: "Haala Bulchiinsaa"
+    },
+    service_land: {
+        en: "Land Services",
+        am: "የመሬት አገልግሎቶች",
+        om: "Tajaajila Lafaa"
+    },
+    service_document_auth: {
+        en: "Document Auth",
+        am: "የሰነድ ማረጋገጫ",
+        om: "Mirkaneessuu Sanadootaa"
+    },
+    service_transport: {
+        en: "Transport",
+        am: "የትራንስፖርት አገልግሎቶች",
+        om: "Ergaa Transportii"
+    },
+    service_construction: {
+        en: "Construction",
+        am: "ግንባት",
+        om: "Ijaarsa"
+    },
+    service_sanitation: {
+        en: "Sanitation",
+        am: "ንፅህፊት",
+        om: "Dandeettii"
+    },
+    service_social: {
+        en: "Social Services",
+        am: "ማህበራዊ አገልግሎቶች",
+        om: "Tajaajila Sagalee"
+    },
+    service_urban_planning: {
+        en: "Urban Planning",
+        am: "የከተማ አቅጣጫ",
+        om: "Qophii Magaalaa"
+    },
+    service_elections: {
+        en: "Elections",
+        am: "ምርጫዎች",
+        om: "Filannoo"
+    },
+    service_bank_services: {
+        en: "Bank Services",
+        am: "የባንክ አገልግሎቶች",
+        om: "Tajaajila Baankii"
+    },
+    service_microfinance: {
+        en: "Microfinance",
+        am: "ማይክሮፋይናንስ",
+        om: "Maayikiroofayinaansii"
+    },
+    service_investment_permit: {
+        en: "Investment Permit",
+        am: "የኢንቨስትመንት ፍቃድ",
+        om: "Hayyama Investimentii"
+    },
+    service_investment_license: {
+        en: "Investment License",
+        am: "የኢንቨስትመንት ፈቃድ",
+        om: "Xalayaa Investimentii"
+    },
+    service_professional_license: {
+        en: "Professional License",
+        am: "የሙያ ፈቃድ",
+        om: "Xalaya Miiraawwan"
+    },
+    service_driving_license: {
+        en: "Driving License",
+        am: "የፈሪያ ፈቃድ",
+        om: "Xalayaa Konkolaachisaa"
+    },
+    service_certification: {
+        en: "Certification",
+        am: "ማረጋገጫ",
+        om: "Mirkaneessuu"
+    },
+    service_inspection: {
+        en: "Inspection",
+        am: "ምርመራ",
+        om: "Raggaachuu"
+    },
+    service_special_cases: {
+        en: "Special Cases",
+        am: "ልዩ ጉዳዮች",
+        om: "Dhimma Adda Addaa"
+    },
+
+    // Service Details
+    service_description_label: {
+        en: "📝 Description",
+        am: "📝 መግለጫ",
+        om: "📝 Ibsa"
+    },
+    service_processing_time: {
+        en: "⏱️ Processing Time",
+        am: "⏱️ የሂደት ጊዜ",
+        om: "⏱️ Yeroo Hojii"
+    },
+    service_fee: {
+        en: "💰 Fee",
+        am: "💰 ክፍያ",
+        om: "💰 Kaffalii"
+    },
+    service_documents: {
+        en: "📄 Required Documents",
+        am: "📄 የሚያስፈልጉ ሰነዶች",
+        om: "📄 Sanadoota Barbaachisaa"
+    },
+    service_visit_office: {
+        en: "🏢 Visit MESOB office with required documents.",
+        am: "🏢 ከሚያስፈልጉ ሰነዶች ጋር ወደ መሶብ መስሪያ ይጎቡ።",
+        om: "🏢 Sanadoota barbaachisaa wajjin gara ofiisii MESOB deemaa."
+    },
+    service_contact: {
+        en: "📞 For inquiries: +251 913 116898",
+        am: "📞 ለጥያቄዎች: +251 913 116898",
+        om: "📞 Gaaffii fuulduraa: +251 913 116898"
+    },
+    service_website: {
+        en: "🌐 Visit: mesobshashe.gov.et",
+        am: "🌐 ይጎብኙ: mesobshashe.gov.et",
+        om: "🌐 Yuu deemu: mesobshashe.gov.et"
+    },
+
+    // Service-specific descriptions
+    national_id_description: {
+        en: "Ethiopian national ID card issuance and renewal",
+        am: "የኢትዮጵያ ብሔራዊ መታወቂያ ካርድ ማስተላለፍ እና ማዘም",
+        om: "Ergaa Ragaa Eenyummaa Biyyaalessaa Itoophiyaa fi haaraessuu"
+    },
+    passport_description: {
+        en: "Ethiopian passport issuance and renewal",
+        am: "የኢትዮጵያ ፓስፖርት ማስተላለፍ እና ማዘም",
+        om: "Ergaa Paaspoortii Itoophiyaa fi haaraessuu"
+    },
+    business_license_description: {
+        en: "New business license registration and renewal",
+        am: "አዲስ የንግድ ፈቃድ ምዝገባ እና ማዘም",
+        om: "Galmee hayyamaa daldalaa haaraa fi haaraessuu"
+    },
+    cooperatives_description: {
+        en: "Cooperative formation and registration",
+        am: "የትብልት ማህበር መመስረት እና ምዝገባ",
+        om: "Uumuu mi'iraa fi galmee"
+    },
+    investment_description: {
+        en: "Investment permit and licensing services",
+        am: "የኢንቨስትመንት ፍቃድ እና ፈቃድ አገልግሎቶች",
+        om: "Hayyamaa investimentii fi tajaajila xalayaa"
+    },
+    revenue_description: {
+        en: "Tax registration and certificate services",
+        am: "የግብር ምዝገባ እና የምስክ አገልግሎቶች",
+        om: "Galmee qophii fi tajaajila sadarkaa"
+    },
+    vital_registration_description: {
+        en: "Birth, death, marriage, and divorce registration",
+        am: "የልደት፣ ሞት፣ ጋብኻን እና ግልባር ምዝገባ",
+        om: "Mirkaneessuu dhiiraa, du'a, gadhii fi adda baasuu"
+    },
+    civil_status_description: {
+        en: "Civil status documentation and updates",
+        am: "የእስራዊ ሁኔታ ሰነድ እና ዝማኔ",
+        om: "Dokumentataa haala bulchiinsaa fi update"
+    },
+    land_description: {
+        en: "Land registration and title services",
+        am: "የመሬት ምዝገባ እና የአርትዖር አገልግሎቶች",
+        om: "Galmee lafaa fi tajaajila abbootii"
+    },
+    document_auth_description: {
+        en: "Document authentication and notarization",
+        am: "የሰነድ ማረጋገጫ እና ማረጋገጫ",
+        om: "Mirkaneessuu sanadootaa fi notarization"
+    },
+    transport_description: {
+        en: "Transport and vehicle licensing services",
+        am: "የትራንስፖርት እና የተሽከርከሪያ ፈቃድ አገልግሎቶች",
+        om: "Tajaajila ergaa transportii fi xalayaa makiinaa"
+    },
+    construction_description: {
+        en: "Construction permits and inspections",
+        am: "የግንባት ፍቃድ እና ምርመራ",
+        om: "Hayyamaa ijaarsaa fi mirkaneessuu"
+    },
+    sanitation_description: {
+        en: "Sanitation and environmental health services",
+        am: "ንፅህፊት እና የአካባቢ ጤና አገልግሎቶች",
+        om: "Dandeettii fi tajaajila faya kaayyoo"
+    },
+    social_description: {
+        en: "Social services and support programs",
+        am: "ማህበራዊ አገልግሎቶች እና ድጋፍ ፕሮግራሞች",
+        om: "Tajaajila sagalee fi porogiraamii gargaarsaa"
+    },
+    urban_planning_description: {
+        en: "Urban planning and zoning services",
+        am: "የከተማ አቅጣጫ እና ዞን አገልግሎቶች",
+        om: "Qophii magaalaa fi tajaajila zoning"
+    },
+    elections_description: {
+        en: "Voter registration and election services",
+        am: "የመምረጫ ምዝገባ እና የምርጫ አገልግሎቶች",
+        om: "Galmee filattootaa fi tajaajila filannoo"
+    },
+    bank_services_description: {
+        en: "Banking and financial services",
+        am: "የባንክ እና የፋይናንስ አገልግሎቶች",
+        om: "Tajaajila baankii fi dhaabbataa daldalaa"
+    },
+    microfinance_description: {
+        en: "Microfinance and small loan services",
+        am: "ማይክሮፋይናንስ እና የትንሽ ብድር አገልግሎቶች",
+        om: "Maayikiroofayinaansii fi tajaajila dargaggii xiqqaa"
+    },
+    investment_permit_description: {
+        en: "Investment permit and licensing",
+        am: "የኢንቨስትመንት ፍቃድ እና ፈቃድ",
+        om: "Hayyamaa investimentii fi xalayaa"
+    },
+    investment_license_description: {
+        en: "Investment license and business registration",
+        am: "የኢንቨስትመንት ፈቃድ እና የንግድ ምዝገባ",
+        om: "Xalayaa investimentii fi galmee daldalaa"
+    },
+    professional_license_description: {
+        en: "Professional licensing and certification",
+        am: "የሙያ ፈቃድ እና ማረጋገጫ",
+        om: "Xalayaa miiraawwan fi mirkaneessuu"
+    },
+    driving_license_description: {
+        en: "Driving license issuance and renewal",
+        am: "የፈሪያ ፈቃድ ማስተላለፍ እና ማዘም",
+        om: "Ergaa xalayaa konkolaachisaa fi haaraessuu"
+    },
+    certification_description: {
+        en: "Quality certification and inspection",
+        am: "የጥራት ማረጋገጫ እና ምርመራ",
+        om: "Mirkaneessuu ogummaa fi raggaachuu"
+    },
+    inspection_description: {
+        en: "Quality inspection and compliance",
+        am: "የጥራት ምርመራ እና አተገባበር",
+        om: "Raggaachuu ogummaa fi eeggaduu"
+    },
+    special_cases_description: {
+        en: "Special case handling and services",
+        am: "የልዩ ጉዳዮች አስተዳደር እና አገልግሎቶች",
+        om: "Hojii eegaa dimma adda addaa fi tajaajiloota isaanii"
+    },
+
+    // Common labels
+    back_to_menu: {
+        en: "🔙 Back to Menu",
+        am: "🔙 ወደ ሜኑ ተመለስ",
+        om: "🔙 Deemu Baafataa"
+    },
+    select_service: {
+        en: "Select a service:",
+        am: "አገልግሎት ይምረጡ:",
+        om: "Tajaajila filadhaa:"
+    },
+    services_coming_soon: {
+        en: "Services coming soon for this pod.",
+        am: "ለዚህ ፎዳ አገልግሎቶች በቅርብ ጊዜ ይመጣሉ።",
+        om: "Tajaajiloota fodda kanaa irra deema."
+    },
+    select_language: {
+        en: "🌐 Select Language:",
+        am: "🌐 ቋንቋ ይምረጡ:",
+        om: "🌐 Afaan filadhaa:"
     },
 
     admin_logout: {

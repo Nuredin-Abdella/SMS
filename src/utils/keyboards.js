@@ -12,15 +12,15 @@ function createMainMenuKeyboard(userLang) {
     return {
         keyboard: [
             [
-                { text: '🏛️ Services' },
-                { text: '🔍 Track Application' }
+                { text: getTranslation('menu_services', userLang) },
+                { text: getTranslation('menu_track', userLang) }
             ],
             [
-                { text: '📋 My Applications' },
-                { text: '📱 Register' }
+                { text: getTranslation('menu_my_applications', userLang) },
+                { text: getTranslation('menu_register', userLang) }
             ],
             [
-                { text: '❓ Help' },
+                { text: getTranslation('menu_howto', userLang) },
                 { text: '🌐 Language' }
             ]
         ],
@@ -33,34 +33,36 @@ function createMainMenuKeyboard(userLang) {
  * Create service pods keyboard - 12 Foddaalee structure
  */
 function createServicePodsKeyboard(userLang) {
+    const { getTranslation } = require('../config/languages');
+    
     return {
         keyboard: [
             [
-                { text: '🆔 Identity Documents' },
-                { text: '🏢 Commercial Registration' }
+                { text: `🆔 ${getTranslation('pod1_name', userLang)}` },
+                { text: `🏢 ${getTranslation('pod2_name', userLang)}` }
             ],
             [
-                { text: '💼 Business Services' },
-                { text: '🏦 Banking Services' }
+                { text: `💼 ${getTranslation('pod3_name', userLang)}` },
+                { text: `🏦 ${getTranslation('pod4_name', userLang)}` }
             ],
             [
-                { text: '🏠 Land Services' },
-                { text: '📈 Investment Services' }
+                { text: `🏠 ${getTranslation('pod5_name', userLang)}` },
+                { text: `📈 ${getTranslation('pod6_name', userLang)}` }
             ],
             [
-                { text: '📄 Document Services' },
-                { text: '📋 License Services' }
+                { text: `📄 ${getTranslation('pod7_name', userLang)}` },
+                { text: `📋 ${getTranslation('pod8_name', userLang)}` }
             ],
             [
-                { text: '📝 Administrative Services' },
-                { text: '✅ Quality Assurance' }
+                { text: `📝 ${getTranslation('pod9_name', userLang)}` },
+                { text: `✅ ${getTranslation('pod10_name', userLang)}` }
             ],
             [
-                { text: '🏗️ Construction Services' },
-                { text: '⭐ Special Services' }
+                { text: `🏗️ ${getTranslation('pod11_name', userLang)}` },
+                { text: `⭐ ${getTranslation('pod12_name', userLang)}` }
             ],
             [
-                { text: '🔙 Back to Menu' }
+                { text: getTranslation('back_to_menu', userLang) }
             ]
         ],
         resize_keyboard: true,
@@ -71,11 +73,48 @@ function createServicePodsKeyboard(userLang) {
 /**
  * Create inline keyboard for service pods
  */
-function createInlineServiceKeyboard(podServices) {
-    const buttons = podServices.map(service => ({
-        text: `${service.emoji} ${service.name}`,
-        callback_data: `service_${service.name.toLowerCase().replace(/\s+/g, '_')}`
-    }));
+function createInlineServiceKeyboard(podServices, userLang = 'en') {
+    const { getTranslation } = require('../config/languages');
+    
+    const buttons = podServices.map(service => {
+        // Try to find translation key based on service name
+        let translationKey = null;
+        const serviceKeys = {
+            'National ID': 'service_national_id',
+            'Passport': 'service_passport',
+            'Business License': 'service_business_license',
+            'Cooperatives': 'service_cooperatives',
+            'Investment': 'service_investment',
+            'Revenue Services': 'service_revenue',
+            'Vital Registration': 'service_vital_registration',
+            'Civil Status': 'service_civil_status',
+            'Land Services': 'service_land',
+            'Document Auth': 'service_document_auth',
+            'Transport': 'service_transport',
+            'Construction': 'service_construction',
+            'Sanitation': 'service_sanitation',
+            'Social Services': 'service_social',
+            'Urban Planning': 'service_urban_planning',
+            'Elections': 'service_elections',
+            'Bank Services': 'service_bank_services',
+            'Microfinance': 'service_microfinance',
+            'Investment Permit': 'service_investment_permit',
+            'Investment License': 'service_investment_license',
+            'Professional License': 'service_professional_license',
+            'Driving License': 'service_driving_license',
+            'Certification': 'service_certification',
+            'Inspection': 'service_inspection',
+            'Special Cases': 'service_special_cases'
+        };
+        
+        translationKey = serviceKeys[service.name];
+        const serviceName = translationKey ? getTranslation(translationKey, userLang) : service.name;
+        
+        return {
+            text: `${service.emoji} ${serviceName}`,
+            callback_data: `service_${service.name.toLowerCase().replace(/\s+/g, '_')}`
+        };
+    });
 
     // Group buttons in rows of 2
     const rows = [];
@@ -88,7 +127,7 @@ function createInlineServiceKeyboard(podServices) {
     }
 
     // Add back button
-    rows.push([{ text: '🔙 Back to Menu', callback_data: 'back_to_menu' }]);
+    rows.push([{ text: getTranslation('back_to_menu', userLang), callback_data: 'back_to_menu' }]);
 
     return {
         inline_keyboard: rows
@@ -178,18 +217,71 @@ function createInlineLanguageKeyboard() {
  * Create admin dashboard keyboard
  */
 function createAdminDashboardKeyboard(userLang) {
+    const { getTranslation } = require('../config/languages');
+    
     return {
         keyboard: [
             [
-                { text: '📋 Applications' },
-                { text: '👥 Users' }
+                { text: getTranslation('admin_view_applications', userLang) },
+                { text: getTranslation('admin_view_users', userLang) }
             ],
             [
-                { text: '📊 Statistics' },
-                { text: '⚙️ Settings' }
+                { text: getTranslation('admin_statistics', userLang) },
+                { text: getTranslation('admin_search', userLang) }
             ],
             [
-                { text: '🚪 Logout' }
+                { text: getTranslation('admin_broadcast', userLang) },
+                { text: getTranslation('admin_settings', userLang) }
+            ],
+            [
+                { text: getTranslation('admin_logout', userLang) }
+            ]
+        ],
+        resize_keyboard: true,
+        one_time_keyboard: false
+    };
+}
+
+/**
+ * Create admin applications keyboard
+ */
+function createAdminApplicationsKeyboard(userLang) {
+    const { getTranslation } = require('../config/languages');
+    
+    return {
+        keyboard: [
+            [
+                { text: getTranslation('admin_view_pending', userLang) },
+                { text: getTranslation('admin_view_approved', userLang) }
+            ],
+            [
+                { text: getTranslation('admin_view_rejected', userLang) },
+                { text: getTranslation('admin_search', userLang) }
+            ],
+            [
+                { text: getTranslation('admin_back', userLang) }
+            ]
+        ],
+        resize_keyboard: true,
+        one_time_keyboard: false
+    };
+}
+
+/**
+ * Create admin actions keyboard
+ */
+function createAdminActionsKeyboard(userLang) {
+    const { getTranslation } = require('../config/languages');
+    
+    return {
+        keyboard: [
+            [
+                { text: '✅ Approve' },
+                { text: '❌ Reject' }
+            ],
+            [
+                { text: '📝 Add Note' },
+                { text: getTranslation('admin_back', userLang) }
             ]
         ],
         resize_keyboard: true,
@@ -204,5 +296,7 @@ module.exports = {
     createAdminDashboardKeyboard,
     createServicePodsKeyboard,
     createInlineServiceKeyboard,
-    createInlineLanguageKeyboard
+    createInlineLanguageKeyboard,
+    createAdminApplicationsKeyboard,
+    createAdminActionsKeyboard
 };

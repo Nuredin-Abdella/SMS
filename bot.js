@@ -46,12 +46,14 @@ const {
     setRegistrationStep, getRegistrationStep,
     setRegistrationData, getRegistrationData, clearRegistrationData,
     setAdminStatus, isAdmin, setAdminStep, getAdminStep,
+    setAdminData, getAdminData,
     initializeUserStateManager
 } = require('./src/utils/userState');
 const {
     createMainMenuKeyboard, createServicesKeyboard,
     createLanguageKeyboard, createAdminDashboardKeyboard,
-    createServicePodsKeyboard, createInlineServiceKeyboard
+    createServicePodsKeyboard, createInlineServiceKeyboard,
+    createAdminApplicationsKeyboard, createAdminActionsKeyboard
 } = require('./src/utils/keyboards');
 const smsService = require('./src/services/smsService');
 const database = require('./src/database/db');
@@ -67,76 +69,52 @@ console.log('✅ All modules loaded successfully');
 // Service Pods matching MESOB website structure (12 Foddaalee)
 const servicePods = {
     'pod1': {
-        name: 'Identity Documents',
-        emoji: '🆔',
         services: ['national_id', 'passport'],
-        description: 'Kenna Ragaalee Bu\'uuraa'
+        emoji: '🆔'
     },
     'pod2': {
-        name: 'Commercial Registration',
-        emoji: '🏢',
         services: ['business_license', 'cooperatives'],
-        description: 'Sassaabbii Galii fi Simannaa'
+        emoji: '🏢'
     },
     'pod3': {
-        name: 'Business Services',
-        emoji: '💼',
         services: ['investment', 'revenue'],
-        description: 'Tajaajila Hayyamaa Daldala'
+        emoji: '💼'
     },
     'pod4': {
-        name: 'Banking Services',
-        emoji: '🏦',
         services: ['bank_services', 'microfinance'],
-        description: 'Tajaajila Baankii Idilee'
+        emoji: '🏦'
     },
     'pod5': {
-        name: 'Land Services',
-        emoji: '🏠',
         services: ['land', 'urban_planning'],
-        description: 'Kenna Tajaajila Lafaa'
+        emoji: '🏠'
     },
     'pod6': {
-        name: 'Investment Services',
-        emoji: '📈',
         services: ['investment_permit', 'investment_license'],
-        description: 'Kenna Tajaajila Investimentii'
+        emoji: '📈'
     },
     'pod7': {
-        name: 'Document Services',
-        emoji: '📄',
         services: ['document_auth', 'vital_registration'],
-        description: 'Tajaajila Sanadootaa fi Waliigaltee'
+        emoji: '📄'
     },
     'pod8': {
-        name: 'License Services',
-        emoji: '📋',
         services: ['driving_license', 'professional_license'],
-        description: 'Kenna Xalayaa Deggersa'
+        emoji: '📋'
     },
     'pod9': {
-        name: 'Administrative Services',
-        emoji: '📝',
         services: ['civil_status', 'social'],
-        description: 'Tajaajiloota Dhimmoota Bulchiinsaa'
+        emoji: '📝'
     },
     'pod10': {
-        name: 'Quality Assurance',
-        emoji: '✅',
         services: ['certification', 'inspection'],
-        description: 'Mirkaneessa Gahuumsa Ogummaa'
+        emoji: '✅'
     },
     'pod11': {
-        name: 'Construction Services',
-        emoji: '🏗️',
         services: ['construction', 'sanitation'],
-        description: 'Hayyamaa Ogummaa fi Ijaarsaa'
+        emoji: '🏗️'
     },
     'pod12': {
-        name: 'Special Services',
-        emoji: '⭐',
         services: ['elections', 'special_cases'],
-        description: 'Kaffaltii Adda Addaa'
+        emoji: '⭐'
     }
 };
 
@@ -285,6 +263,87 @@ const services = {
         fee: 'Free',
         documents: 'ID, Address proof',
         pod: 'pod12'
+    },
+    'bank_services': {
+        name: 'Bank Services',
+        emoji: '🏦',
+        description: 'Banking and financial services',
+        processingTime: '1-3 days',
+        fee: 'Varies',
+        documents: 'ID, Account information',
+        pod: 'pod4'
+    },
+    'microfinance': {
+        name: 'Microfinance',
+        emoji: '💵',
+        description: 'Microfinance and small loan services',
+        processingTime: '3-5 days',
+        fee: 'Varies',
+        documents: 'ID, Business plan, Guarantors',
+        pod: 'pod4'
+    },
+    'investment_permit': {
+        name: 'Investment Permit',
+        emoji: '📈',
+        description: 'Investment permit and licensing',
+        processingTime: '5-7 days',
+        fee: '200 ETB',
+        documents: 'Business plan, Investment proof, ID',
+        pod: 'pod6'
+    },
+    'investment_license': {
+        name: 'Investment License',
+        emoji: '📊',
+        description: 'Investment license and business registration',
+        processingTime: '5-7 days',
+        fee: '300 ETB',
+        documents: 'Investment permit, ID, Business documents',
+        pod: 'pod6'
+    },
+    'professional_license': {
+        name: 'Professional License',
+        emoji: '📋',
+        description: 'Professional licensing and certification',
+        processingTime: '5-10 days',
+        fee: '150 ETB',
+        documents: 'Qualifications, ID, Experience proof',
+        pod: 'pod8'
+    },
+    'driving_license': {
+        name: 'Driving License',
+        emoji: '🚗',
+        description: 'Driving license issuance and renewal',
+        processingTime: '7-14 days',
+        fee: '200 ETB',
+        documents: 'ID, Medical certificate, Photos',
+        pod: 'pod8'
+    },
+    'certification': {
+        name: 'Certification',
+        emoji: '✅',
+        description: 'Quality certification and inspection',
+        processingTime: '3-7 days',
+        fee: '100 ETB',
+        documents: 'Product samples, ID, Business license',
+        pod: 'pod10'
+    },
+    'inspection': {
+        name: 'Inspection',
+        emoji: '🔍',
+        description: 'Quality inspection and compliance',
+        processingTime: '1-3 days',
+        fee: '50 ETB',
+        documents: 'Product information, ID',
+        pod: 'pod10'
+    },
+    'special_cases': {
+        name: 'Special Cases',
+        emoji: '⭐',
+        description: 'Special case handling and services',
+        processingTime: 'Varies',
+        fee: 'Varies',
+        documents: 'Case-specific documents, ID',
+        pod: 'pod12'
     }
 };
 
@@ -320,33 +379,16 @@ bot.on('callback_query', async (query) => {
                 const podServices = pod.services.map(s => services[s]).filter(Boolean);
 
                 if (podServices.length > 0) {
-                    const inlineKeyboard = createInlineServiceKeyboard(podServices);
+                    const inlineKeyboard = createInlineServiceKeyboard(podServices, userLang);
+                    const podName = getTranslation(`pod${podId.replace('pod', '')}_name`, userLang);
+                    const podDescription = getTranslation(`pod${podId.replace('pod', '')}_description`, userLang);
+                    
                     await bot.sendMessage(chatId,
-                        `${pod.emoji} ${pod.name}\n\n${pod.description}\n\nSelect a service:`,
+                        `${pod.emoji} ${podName}\n\n${podDescription}\n\n${getTranslation('select_service', userLang)}`,
                         { reply_markup: inlineKeyboard }
                     );
                 } else {
-                    await bot.sendMessage(chatId, 'Services coming soon for this pod.');
-                }
-            }
-        }
-
-        // Handle service pod button clicks from inline keyboard
-        const podNames = Object.values(servicePods).map(p => p.name);
-        if (podNames.includes(data)) {
-            const pod = Object.values(servicePods).find(p => p.name === data);
-            if (pod) {
-                await bot.answerCallbackQuery(query.id);
-                const podServices = pod.services.map(s => services[s]).filter(Boolean);
-
-                if (podServices.length > 0) {
-                    const inlineKeyboard = createInlineServiceKeyboard(podServices);
-                    await bot.sendMessage(chatId,
-                        `${pod.emoji} ${pod.name}\n\n${pod.description}\n\nSelect a service:`,
-                        { reply_markup: inlineKeyboard }
-                    );
-                } else {
-                    await bot.sendMessage(chatId, 'Services coming soon for this pod.');
+                    await bot.sendMessage(chatId, getTranslation('services_coming_soon', userLang));
                 }
             }
         }
@@ -361,26 +403,29 @@ bot.on('callback_query', async (query) => {
                 const user = await database.getUser(chatId);
                 const isVerified = user && user.personalInfo && user.personalInfo.phoneVerified;
 
-                const serviceDetails = `${service.emoji} ${service.name}\n\n` +
-                    `📝 ${service.description}\n\n` +
-                    `⏱️ Processing Time: ${service.processingTime}\n` +
-                    `💰 Fee: ${service.fee}\n` +
-                    `📄 Required Documents: ${service.documents}\n\n` +
-                    `🏢 Visit MESOB office with required documents.\n` +
-                    `📞 For inquiries: +251 913 116898\n` +
-                    `🌐 Visit: mesobshashe.gov.et`;
+                const serviceKey = Object.keys(services).find(key => services[key].name === service.name);
+                const serviceNameTrans = getTranslation(`service_${serviceKey}`, userLang);
+                const serviceDescTrans = getTranslation(`${serviceKey}_description`, userLang);
+
+                const serviceDetails = `${service.emoji} ${serviceNameTrans}\n\n` +
+                    `${getTranslation('service_description_label', userLang)} ${serviceDescTrans}\n\n` +
+                    `${getTranslation('service_processing_time', userLang)} ${service.processingTime}\n` +
+                    `${getTranslation('service_fee', userLang)} ${service.fee}\n` +
+                    `${getTranslation('service_documents', userLang)} ${service.documents}\n\n` +
+                    `${getTranslation('service_visit_office', userLang)}\n` +
+                    `${getTranslation('service_contact', userLang)}\n` +
+                    `${getTranslation('service_website', userLang)}`;
 
                 await bot.sendMessage(chatId, serviceDetails);
 
                 if (isVerified) {
                     setTimeout(async () => {
-                        const serviceKey = Object.keys(services).find(key => services[key].name === service.name);
                         const appStart = applicationService.startApplication(chatId, userLang, serviceKey);
                         await bot.sendMessage(chatId, appStart.firstPrompt);
                     }, 2000);
                 } else {
                     setTimeout(async () => {
-                        await bot.sendMessage(chatId, '📱 Please register first to apply for this service.\n\nEnter your phone number:');
+                        await bot.sendMessage(chatId, getTranslation('registration_prompt', userLang));
                     }, 2000);
                 }
             }
@@ -390,7 +435,7 @@ bot.on('callback_query', async (query) => {
         if (data === 'back_to_menu') {
             await bot.answerCallbackQuery(query.id);
             const keyboard = createMainMenuKeyboard(userLang);
-            return await bot.sendMessage(chatId, '🏠 Main Menu', { reply_markup: keyboard });
+            return await bot.sendMessage(chatId, getTranslation('main_menu', userLang), { reply_markup: keyboard });
         }
 
         // Handle language selection
@@ -400,10 +445,10 @@ bot.on('callback_query', async (query) => {
 
             setUserLanguage(chatId, lang);
             await bot.answerCallbackQuery(query.id);
-            await bot.sendMessage(chatId, `✅ Language set to ${langNames[lang]}`);
+            await bot.sendMessage(chatId, getTranslation('language_changed', lang));
 
             const keyboard = createMainMenuKeyboard(lang);
-            await bot.sendMessage(chatId, '🏠 Main Menu', { reply_markup: keyboard });
+            await bot.sendMessage(chatId, getTranslation('main_menu', lang), { reply_markup: keyboard });
         }
 
     } catch (error) {
@@ -474,107 +519,102 @@ bot.on('message', async (msg) => {
             const langMap = { '🇺🇸 English': 'en', '🇪ᇹ አማርኛ': 'am', '🇪ᇹ Afaan Oromo': 'om' };
             const selectedLang = langMap[text];
             setUserLanguage(chatId, selectedLang);
-            await bot.sendMessage(chatId, `✅ Language set to ${text}`);
+            await bot.sendMessage(chatId, getTranslation('language_changed', selectedLang));
             const keyboard = createMainMenuKeyboard(selectedLang);
-            return await bot.sendMessage(chatId, '🏠 Main Menu', { reply_markup: keyboard });
+            return await bot.sendMessage(chatId, getTranslation('main_menu', selectedLang), { reply_markup: keyboard });
         }
 
         // Handle main menu options
-        if (text === '🏛️ Services') {
+        if (text === getTranslation('menu_services', userLang)) {
             const keyboard = createServicePodsKeyboard(userLang);
             return await bot.sendMessage(chatId,
-                '🏛️ MESOB Service Pods\n\nSelect a service pod to explore:',
+                getTranslation('service_pods_title', userLang),
                 { reply_markup: keyboard }
             );
         }
 
         // Handle service pod button clicks from main keyboard
-        const podNames = Object.values(servicePods).map(p => p.name);
-        if (podNames.includes(text)) {
-            const pod = Object.values(servicePods).find(p => p.name === text);
-            if (pod) {
-                const podServices = pod.services.map(s => services[s]).filter(Boolean);
+        const podKeys = Object.keys(servicePods);
+        for (const podKey of podKeys) {
+            const podName = getTranslation(`pod${podKey.replace('pod', '')}_name`, userLang);
+            if (text === podName) {
+                const pod = servicePods[podKey];
+                if (pod) {
+                    const podServices = pod.services.map(s => services[s]).filter(Boolean);
 
-                if (podServices.length > 0) {
-                    const inlineKeyboard = createInlineServiceKeyboard(podServices);
-                    await bot.sendMessage(chatId,
-                        `${pod.emoji} ${pod.name}\n\n${pod.description}\n\nSelect a service:`,
-                        { reply_markup: inlineKeyboard }
-                    );
-                } else {
-                    await bot.sendMessage(chatId, 'Services coming soon for this pod.');
+                    if (podServices.length > 0) {
+                        const inlineKeyboard = createInlineServiceKeyboard(podServices, userLang);
+                        const podDescription = getTranslation(`pod${podKey.replace('pod', '')}_description`, userLang);
+                        
+                        await bot.sendMessage(chatId,
+                            `${pod.emoji} ${podName}\n\n${podDescription}\n\n${getTranslation('select_service', userLang)}`,
+                            { reply_markup: inlineKeyboard }
+                        );
+                    } else {
+                        await bot.sendMessage(chatId, getTranslation('services_coming_soon', userLang));
+                    }
                 }
+                return;
             }
-            return;
         }
 
-        if (text === '🔍 Track Application') {
+        if (text === getTranslation('menu_track', userLang)) {
             return await bot.sendMessage(chatId,
-                '🔍 Track Application\n\nEnter your tracking number to check your application status:'
+                `${getTranslation('menu_track', userLang)}\n\n${getTranslation('track_prompt', userLang)}`
             );
         }
 
-        if (text === '📋 My Applications') {
+        if (text === getTranslation('menu_my_applications', userLang)) {
             const user = await database.getUser(chatId);
             if (!user || !user.personalInfo || !user.personalInfo.phoneVerified) {
-                await bot.sendMessage(chatId, '📱 Please register first to access your applications.');
+                await bot.sendMessage(chatId, getTranslation('registration_prompt', userLang));
                 setTimeout(() => {
                     const keyboard = createMainMenuKeyboard(userLang);
-                    bot.sendMessage(chatId, '📱 Please enter your phone number to register:');
+                    bot.sendMessage(chatId, getTranslation('registration_prompt', userLang));
                 }, 2000);
                 return;
             }
 
             const applications = await database.getApplicationsByChatId(chatId);
             if (!applications || applications.length === 0) {
-                return await bot.sendMessage(chatId, '📋 You have no applications yet.');
+                return await bot.sendMessage(chatId, getTranslation('no_applications', userLang));
             }
 
             const appList = applications.map((app, index) =>
                 `${index + 1}. ${app.service} - ${app.trackingNumber} (${app.status})`
             ).join('\n');
 
-            return await bot.sendMessage(chatId, `📋 My Applications:\n\n${appList}`);
+            return await bot.sendMessage(chatId, `${getTranslation('menu_my_applications', userLang)}:\n\n${appList}`);
         }
 
-        if (text === '📱 Register') {
+        if (text === getTranslation('menu_register', userLang)) {
             const user = await database.getUser(chatId);
             if (user && user.personalInfo && user.personalInfo.phoneVerified) {
                 return await bot.sendMessage(chatId,
-                    `✅ You are already registered!\n\nPhone: ${user.personalInfo.phoneNumber}\nName: ${user.personalInfo.fullName}`
+                    getTranslation('registration_already_registered', userLang).replace('{phone}', user.personalInfo.phoneNumber)
                 );
             }
-            return await bot.sendMessage(chatId,
-                '📱 Registration\n\nPlease enter your phone number (format: 0912345678 or +251912345678):'
-            );
+            return await bot.sendMessage(chatId, getTranslation('registration_prompt', userLang));
         }
 
-        if (text === '❓ Help') {
-            const helpText = `🤖 MESOB Bot Help\n\n` +
-                `📋 Features:\n` +
-                `• 🏛️ Access 12 service pods with 130+ services\n` +
-                `• 🔍 Track applications\n` +
-                `• 📱 Simple registration\n` +
-                `• 🌐 Multilingual support\n` +
-                `• ⭐ Professional UI/UX\n\n` +
-                `📞 Support: +251 913 116898\n` +
-                `🌐 Website: mesobshashe.gov.et`;
+        if (text === getTranslation('menu_howto', userLang)) {
+            const helpText = getTranslation('howto_content', userLang);
             await bot.sendMessage(chatId, helpText);
             setTimeout(() => {
                 const keyboard = createMainMenuKeyboard(userLang);
-                bot.sendMessage(chatId, '🏠 Main Menu', { reply_markup: keyboard });
+                bot.sendMessage(chatId, getTranslation('main_menu', userLang), { reply_markup: keyboard });
             }, 3000);
             return;
         }
 
         if (text === '🌐 Language') {
             const keyboard = createLanguageKeyboard();
-            return await bot.sendMessage(chatId, '🌐 Select Language:', { reply_markup: keyboard });
+            return await bot.sendMessage(chatId, getTranslation('select_language', userLang), { reply_markup: keyboard });
         }
 
-        if (text === '🔙 Back to Menu') {
+        if (text === getTranslation('back_to_menu', userLang)) {
             const keyboard = createMainMenuKeyboard(userLang);
-            return await bot.sendMessage(chatId, '🏠 Main Menu', { reply_markup: keyboard });
+            return await bot.sendMessage(chatId, getTranslation('main_menu', userLang), { reply_markup: keyboard });
         }
 
         // Handle phone number input (registration)
@@ -702,11 +742,11 @@ bot.on('message', async (msg) => {
                 if (authResult.success) {
                     setAdminStatus(chatId, true);
                     setAdminStep(chatId, 'dashboard');
-                    await bot.sendMessage(chatId, '✅ Admin login successful!');
+                    await bot.sendMessage(chatId, getTranslation('admin_login_success', userLang));
                     const keyboard = createAdminDashboardKeyboard(userLang);
-                    return await bot.sendMessage(chatId, '📊 Admin Dashboard', { reply_markup: keyboard });
+                    return await bot.sendMessage(chatId, getTranslation('admin_dashboard', userLang), { reply_markup: keyboard });
                 } else {
-                    return await bot.sendMessage(chatId, '❌ Invalid credentials.');
+                    return await bot.sendMessage(chatId, getTranslation('admin_login_failed', userLang));
                 }
             }
         }
@@ -715,23 +755,25 @@ bot.on('message', async (msg) => {
         if (isAdmin(chatId)) {
             const adminStep = getAdminStep(chatId);
             if (adminStep === 'dashboard') {
-                if (text === '📋 Applications') {
+                if (text === getTranslation('admin_view_applications', userLang)) {
+                    const keyboard = createAdminApplicationsKeyboard(userLang);
+                    setAdminStep(chatId, 'applications');
                     const applications = await adminService.getRecentApplications(10);
                     if (applications.length === 0) {
-                        await bot.sendMessage(chatId, '📋 No applications found.');
+                        await bot.sendMessage(chatId, '📋 No applications found.', { reply_markup: keyboard });
                     } else {
                         const appList = applications.map((app, index) =>
                             `${index + 1}. ${app.trackingNumber} - ${app.service} (${app.status})`
                         ).join('\n');
-                        await bot.sendMessage(chatId, `📋 Recent Applications:\n\n${appList}`);
+                        await bot.sendMessage(chatId, `📋 Recent Applications:\n\n${appList}`, { reply_markup: keyboard });
                     }
                     return;
                 }
 
-                if (text === '👥 Users') {
+                if (text === getTranslation('admin_view_users', userLang)) {
                     const users = await adminService.getAllUsers();
                     if (users.length === 0) {
-                        await bot.sendMessage(chatId, '👥 No users found.');
+                        await bot.sendMessage(chatId, getTranslation('admin_statistics', userLang));
                     } else {
                         const userList = users.slice(0, 10).map((user, index) =>
                             `${index + 1}. ${user.personalInfo?.fullName || 'Unknown'} - ${user.personalInfo?.phoneNumber || 'No phone'}`
@@ -741,25 +783,221 @@ bot.on('message', async (msg) => {
                     return;
                 }
 
-                if (text === '📊 Statistics') {
+                if (text === getTranslation('admin_statistics', userLang)) {
                     const stats = await adminService.getStatistics();
-                    await bot.sendMessage(chatId,
-                        `📊 Statistics:\n\n` +
-                        `Total Users: ${stats.totalUsers}\n` +
-                        `Total Applications: ${stats.totalApplications}\n` +
-                        `Pending: ${stats.pending}\n` +
-                        `Approved: ${stats.approved}\n` +
-                        `Rejected: ${stats.rejected}`
-                    );
+                    const serviceBreakdown = Object.entries(stats.serviceBreakdown)
+                        .map(([service, count]) => `${service}: ${count}`)
+                        .join('\n');
+                    
+                    const statsMessage = getTranslation('admin_statistics_summary', userLang)
+                        .replace('{totalUsers}', stats.totalUsers)
+                        .replace('{totalApplications}', stats.totalApplications)
+                        .replace('{pending}', stats.pending)
+                        .replace('{approved}', stats.approved)
+                        .replace('{rejected}', stats.rejected)
+                        .replace('{serviceBreakdown}', serviceBreakdown);
+                    
+                    await bot.sendMessage(chatId, statsMessage);
                     return;
                 }
 
-                if (text === '🚪 Logout') {
+                if (text === getTranslation('admin_search', userLang)) {
+                    setAdminStep(chatId, 'search');
+                    await bot.sendMessage(chatId, getTranslation('admin_search_prompt', userLang));
+                    return;
+                }
+
+                if (text === getTranslation('admin_broadcast', userLang)) {
+                    setAdminStep(chatId, 'broadcast');
+                    await bot.sendMessage(chatId, getTranslation('admin_broadcast_prompt', userLang));
+                    return;
+                }
+
+                if (text === getTranslation('admin_settings', userLang)) {
+                    await bot.sendMessage(chatId, '⚙️ Settings - Coming Soon');
+                    return;
+                }
+
+                if (text === getTranslation('admin_logout', userLang)) {
                     setAdminStatus(chatId, false);
                     clearAdminSession(chatId);
                     const keyboard = createMainMenuKeyboard(userLang);
                     return await bot.sendMessage(chatId, '👋 Logged out successfully!', { reply_markup: keyboard });
                 }
+            }
+
+            if (adminStep === 'applications') {
+                if (text === getTranslation('admin_view_pending', userLang)) {
+                    const applications = await adminService.getApplicationsByStatus('submitted');
+                    if (applications.length === 0) {
+                        await bot.sendMessage(chatId, '⏳ No pending applications.');
+                    } else {
+                        const appList = applications.map((app, index) =>
+                            `${index + 1}. ${app.trackingNumber} - ${app.service}`
+                        ).join('\n');
+                        await bot.sendMessage(chatId, `⏳ Pending Applications:\n\n${appList}`);
+                    }
+                    return;
+                }
+
+                if (text === getTranslation('admin_view_approved', userLang)) {
+                    const applications = await adminService.getApplicationsByStatus('approved');
+                    if (applications.length === 0) {
+                        await bot.sendMessage(chatId, '✅ No approved applications.');
+                    } else {
+                        const appList = applications.map((app, index) =>
+                            `${index + 1}. ${app.trackingNumber} - ${app.service}`
+                        ).join('\n');
+                        await bot.sendMessage(chatId, `✅ Approved Applications:\n\n${appList}`);
+                    }
+                    return;
+                }
+
+                if (text === getTranslation('admin_view_rejected', userLang)) {
+                    const applications = await adminService.getApplicationsByStatus('rejected');
+                    if (applications.length === 0) {
+                        await bot.sendMessage(chatId, '❌ No rejected applications.');
+                    } else {
+                        const appList = applications.map((app, index) =>
+                            `${index + 1}. ${app.trackingNumber} - ${app.service}`
+                        ).join('\n');
+                        await bot.sendMessage(chatId, `❌ Rejected Applications:\n\n${appList}`);
+                    }
+                    return;
+                }
+
+                if (text === getTranslation('admin_search', userLang)) {
+                    setAdminStep(chatId, 'search');
+                    await bot.sendMessage(chatId, getTranslation('admin_search_prompt', userLang));
+                    return;
+                }
+
+                if (text === getTranslation('admin_back', userLang)) {
+                    setAdminStep(chatId, 'dashboard');
+                    const keyboard = createAdminDashboardKeyboard(userLang);
+                    await bot.sendMessage(chatId, getTranslation('admin_dashboard', userLang), { reply_markup: keyboard });
+                    return;
+                }
+
+                // Handle tracking number input for application details
+                if (text.length >= 6 && /^[a-z0-9]+$/i.test(text)) {
+                    const application = await adminService.getApplication(text.toUpperCase());
+                    if (application) {
+                        setAdminStep(chatId, 'application_details');
+                        setAdminData(chatId, { trackingNumber: application.trackingNumber });
+                        
+                        const appDetails = getTranslation('admin_application_details', userLang)
+                            .replace('{trackingNumber}', application.trackingNumber)
+                            .replace('{service}', application.service)
+                            .replace('{status}', application.status)
+                            .replace('{fullName}', application.formData?.fullName || 'N/A')
+                            .replace('{phone}', application.formData?.phone || 'N/A')
+                            .replace('{email}', application.formData?.email || 'N/A')
+                            .replace('{idNumber}', application.formData?.idNumber || 'N/A')
+                            .replace('{address}', application.formData?.address || 'N/A')
+                            .replace('{documentCount}', application.documents?.length || 0)
+                            .replace('{notes}', application.notes || 'No notes');
+                        
+                        const keyboard = createAdminActionsKeyboard(userLang);
+                        await bot.sendMessage(chatId, appDetails, { reply_markup: keyboard });
+                    } else {
+                        await bot.sendMessage(chatId, '❌ Application not found.');
+                    }
+                    return;
+                }
+            }
+
+            if (adminStep === 'application_details') {
+                const adminData = getAdminData(chatId);
+                
+                if (text === '✅ Approve') {
+                    const result = await adminService.updateApplicationStatus(adminData.trackingNumber, 'approved');
+                    if (result.success) {
+                        await bot.sendMessage(chatId, getTranslation('admin_approve_application', userLang).replace('{trackingNumber}', adminData.trackingNumber));
+                    } else {
+                        await bot.sendMessage(chatId, '❌ Failed to approve application.');
+                    }
+                    setAdminStep(chatId, 'applications');
+                    const keyboard = createAdminApplicationsKeyboard(userLang);
+                    await bot.sendMessage(chatId, '📋 Applications', { reply_markup: keyboard });
+                    return;
+                }
+
+                if (text === '❌ Reject') {
+                    const result = await adminService.updateApplicationStatus(adminData.trackingNumber, 'rejected');
+                    if (result.success) {
+                        await bot.sendMessage(chatId, getTranslation('admin_reject_application', userLang).replace('{trackingNumber}', adminData.trackingNumber));
+                    } else {
+                        await bot.sendMessage(chatId, '❌ Failed to reject application.');
+                    }
+                    setAdminStep(chatId, 'applications');
+                    const keyboard = createAdminApplicationsKeyboard(userLang);
+                    await bot.sendMessage(chatId, '📋 Applications', { reply_markup: keyboard });
+                    return;
+                }
+
+                if (text === '📝 Add Note') {
+                    setAdminStep(chatId, 'add_note');
+                    await bot.sendMessage(chatId, getTranslation('admin_add_note', userLang).replace('{trackingNumber}', adminData.trackingNumber));
+                    return;
+                }
+
+                if (text === getTranslation('admin_back', userLang)) {
+                    setAdminStep(chatId, 'applications');
+                    const keyboard = createAdminApplicationsKeyboard(userLang);
+                    await bot.sendMessage(chatId, '📋 Applications', { reply_markup: keyboard });
+                    return;
+                }
+            }
+
+            if (adminStep === 'add_note') {
+                const adminData = getAdminData(chatId);
+                const result = await adminService.updateApplicationStatus(adminData.trackingNumber, null, text);
+                if (result.success) {
+                    await bot.sendMessage(chatId, getTranslation('admin_note_added', userLang));
+                } else {
+                    await bot.sendMessage(chatId, '❌ Failed to add note.');
+                }
+                setAdminStep(chatId, 'application_details');
+                const keyboard = createAdminActionsKeyboard(userLang);
+                await bot.sendMessage(chatId, getTranslation('admin_application_details', userLang).replace('{trackingNumber}', adminData.trackingNumber), { reply_markup: keyboard });
+                return;
+            }
+
+            if (adminStep === 'search') {
+                const applications = await adminService.searchApplications(text);
+                if (applications.length === 0) {
+                    await bot.sendMessage(chatId, '❌ No applications found.');
+                } else {
+                    const appList = applications.map((app, index) =>
+                        `${index + 1}. ${app.trackingNumber} - ${app.service} (${app.status})`
+                    ).join('\n');
+                    await bot.sendMessage(chatId, `🔍 Search Results:\n\n${appList}`);
+                }
+                setAdminStep(chatId, 'dashboard');
+                const keyboard = createAdminDashboardKeyboard(userLang);
+                await bot.sendMessage(chatId, getTranslation('admin_dashboard', userLang), { reply_markup: keyboard });
+                return;
+            }
+
+            if (adminStep === 'broadcast') {
+                const users = await adminService.getAllUsers();
+                let sentCount = 0;
+                
+                for (const user of users) {
+                    try {
+                        await bot.sendMessage(user.chatId, `📢 ${text}`);
+                        sentCount++;
+                    } catch (error) {
+                        console.error(`Failed to send to user ${user.chatId}:`, error);
+                    }
+                }
+                
+                await bot.sendMessage(chatId, getTranslation('admin_broadcast_sent', userLang).replace('{count}', sentCount));
+                setAdminStep(chatId, 'dashboard');
+                const keyboard = createAdminDashboardKeyboard(userLang);
+                await bot.sendMessage(chatId, getTranslation('admin_dashboard', userLang), { reply_markup: keyboard });
+                return;
             }
         }
 

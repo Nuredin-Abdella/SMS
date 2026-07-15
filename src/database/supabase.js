@@ -201,6 +201,37 @@ class SupabaseDatabase {
     }
 
     /**
+     * Generate tracking number
+     */
+    generateTrackingNumber() {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        let result = '';
+        for (let i = 0; i < 8; i++) {
+            result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return result;
+    }
+
+    /**
+     * Create application with auto-generated tracking number
+     */
+    async createApplication(applicationData) {
+        try {
+            const trackingNumber = this.generateTrackingNumber();
+            const applicationWithTracking = {
+                ...applicationData,
+                trackingNumber: trackingNumber
+            };
+
+            await this.saveApplication(applicationWithTracking);
+            return trackingNumber;
+        } catch (error) {
+            console.error('Error creating application:', error);
+            throw error;
+        }
+    }
+
+    /**
      * Save application
      */
     async saveApplication(applicationData) {

@@ -710,6 +710,53 @@ bot.on('message', async (msg) => {
             }
         }
 
+        // Also handle services using exact translation text (more reliable)
+        const serviceKeys = [
+            'service_national_id', 'service_passport', 'service_vital_registration',
+            'service_civil_status', 'service_business_licensing', 'service_cooperatives',
+            'service_revenue', 'service_land', 'service_investment', 'service_document_auth',
+            'service_transport', 'service_construction', 'service_sanitation',
+            'service_social', 'service_urban_planning', 'service_elections'
+        ];
+
+        for (const serviceKey of serviceKeys) {
+            const translatedText = getTranslation(serviceKey, userLang);
+            if (text === translatedText) {
+                // Check if user is registered
+                const user = await database.getUser(chatId);
+                const isVerified = user && user.personalInfo && user.personalInfo.phoneVerified;
+
+                if (!isVerified) {
+                    // Show service info then prompt registration
+                    const serviceInfo = getTranslation(serviceKey + '_info', userLang) ||
+                        `📋 ${getTranslation(serviceKey, userLang)}\n\n✅ Processing Time: 3-5 days\n💰 Fee: Contact MESOB office\n📄 Required documents will be specified during application.\n\n🏢 Visit MESOB office with required documents.`;
+
+                    await bot.sendMessage(chatId, serviceInfo);
+
+                    setTimeout(() => {
+                        bot.sendMessage(chatId, getTranslation('registration_prompt', userLang));
+                    }, 3000);
+                    return;
+                } else {
+                    // User is registered - show service info and start application
+                    const serviceInfo = getTranslation(serviceKey + '_info', userLang) ||
+                        `📋 ${getTranslation(serviceKey, userLang)}\n\n✅ Processing Time: 3-5 days\n💰 Fee: Contact MESOB office\n📄 Required documents will be specified during application.\n\n🏢 Visit MESOB office with required documents.`;
+
+                    await bot.sendMessage(chatId, serviceInfo);
+
+                    setTimeout(() => {
+                        const result = applicationService.startApplication(chatId, userLang, serviceKey.replace('service_', ''));
+                        if (result.success) {
+                            bot.sendMessage(chatId, result.firstPrompt);
+                        } else {
+                            bot.sendMessage(chatId, '❌ Failed to start application. Please try again.');
+                        }
+                    }, 3000);
+                    return;
+                }
+            }
+        }
+
         // Handle phone number input (registration)
         if (/^\d{9,15}$/.test(text.replace(/[^0-9]/g, ''))) {
             const phoneNumber = smsService.formatPhoneNumber(text);

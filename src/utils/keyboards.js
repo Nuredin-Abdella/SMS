@@ -6,7 +6,7 @@
 const { getTranslation } = require('../config/languages');
 
 /**
- * Create main menu keyboard - Professional design
+ * Create main menu keyboard - Professional design with translations
  */
 function createMainMenuKeyboard(userLang) {
     return {
@@ -20,8 +20,11 @@ function createMainMenuKeyboard(userLang) {
                 { text: getTranslation('menu_register', userLang) }
             ],
             [
-                { text: getTranslation('menu_howto', userLang) },
-                { text: '🌐 Language' }
+                { text: getTranslation('menu_faq', userLang) },
+                { text: getTranslation('menu_contact', userLang) }
+            ],
+            [
+                { text: getTranslation('menu_language', userLang) }
             ]
         ],
         resize_keyboard: true,
@@ -34,7 +37,7 @@ function createMainMenuKeyboard(userLang) {
  */
 function createServicePodsKeyboard(userLang) {
     const { getTranslation } = require('../config/languages');
-    
+
     return {
         keyboard: [
             [
@@ -75,7 +78,7 @@ function createServicePodsKeyboard(userLang) {
  */
 function createInlineServiceKeyboard(podServices, userLang = 'en') {
     const { getTranslation } = require('../config/languages');
-    
+
     const buttons = podServices.map(service => {
         // Try to find translation key based on service name
         let translationKey = null;
@@ -106,10 +109,10 @@ function createInlineServiceKeyboard(podServices, userLang = 'en') {
             'Inspection': 'service_inspection',
             'Special Cases': 'service_special_cases'
         };
-        
+
         translationKey = serviceKeys[service.name];
         const serviceName = translationKey ? getTranslation(translationKey, userLang) : service.name;
-        
+
         return {
             text: `${service.emoji} ${serviceName}`,
             callback_data: `service_${service.name.toLowerCase().replace(/\s+/g, '_')}`
@@ -135,45 +138,45 @@ function createInlineServiceKeyboard(podServices, userLang = 'en') {
 }
 
 /**
- * Create services menu keyboard - Organized like MESOB website categories
+ * Create services menu keyboard - Using translations like MESOB website
  */
 function createServicesKeyboard(userLang) {
     return {
         keyboard: [
             [
-                { text: '🆔 National ID' },
-                { text: '🛂 Passport' }
+                { text: getTranslation('service_national_id', userLang) },
+                { text: getTranslation('service_passport', userLang) }
             ],
             [
-                { text: '📋 Vital Registration' },
-                { text: '👤 Civil Status' }
+                { text: getTranslation('service_vital_registration', userLang) },
+                { text: getTranslation('service_civil_status', userLang) }
             ],
             [
-                { text: '🏢 Business License' },
-                { text: '🤝 Cooperatives' }
+                { text: getTranslation('service_business_licensing', userLang) },
+                { text: getTranslation('service_cooperatives', userLang) }
             ],
             [
-                { text: '💰 Revenue Services' },
-                { text: '🏠 Land Services' }
+                { text: getTranslation('service_revenue', userLang) },
+                { text: getTranslation('service_land', userLang) }
             ],
             [
-                { text: '💼 Investment' },
-                { text: '📄 Document Auth' }
+                { text: getTranslation('service_investment', userLang) },
+                { text: getTranslation('service_document_auth', userLang) }
             ],
             [
-                { text: '🚗 Transport' },
-                { text: '🏗️ Construction' }
+                { text: getTranslation('service_transport', userLang) },
+                { text: getTranslation('service_construction', userLang) }
             ],
             [
-                { text: '🧹 Sanitation' },
-                { text: '🛎️ Social Services' }
+                { text: getTranslation('service_sanitation', userLang) },
+                { text: getTranslation('service_social', userLang) }
             ],
             [
-                { text: '🗺️ Urban Planning' },
-                { text: '🗳️ Elections' }
+                { text: getTranslation('service_urban_planning', userLang) },
+                { text: getTranslation('service_elections', userLang) }
             ],
             [
-                { text: '🔙 Back to Menu' }
+                { text: getTranslation('back_to_menu', userLang) }
             ]
         ],
         resize_keyboard: true,
@@ -218,7 +221,7 @@ function createInlineLanguageKeyboard() {
  */
 function createAdminDashboardKeyboard(userLang) {
     const { getTranslation } = require('../config/languages');
-    
+
     return {
         keyboard: [
             [
@@ -247,7 +250,7 @@ function createAdminDashboardKeyboard(userLang) {
  */
 function createAdminApplicationsKeyboard(userLang) {
     const { getTranslation } = require('../config/languages');
-    
+
     return {
         keyboard: [
             [
@@ -272,7 +275,7 @@ function createAdminApplicationsKeyboard(userLang) {
  */
 function createAdminActionsKeyboard(userLang) {
     const { getTranslation } = require('../config/languages');
-    
+
     return {
         keyboard: [
             [

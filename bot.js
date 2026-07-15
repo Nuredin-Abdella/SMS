@@ -382,7 +382,7 @@ bot.on('callback_query', async (query) => {
                     const inlineKeyboard = createInlineServiceKeyboard(podServices, userLang);
                     const podName = getTranslation(`pod${podId.replace('pod', '')}_name`, userLang);
                     const podDescription = getTranslation(`pod${podId.replace('pod', '')}_description`, userLang);
-                    
+
                     await bot.sendMessage(chatId,
                         `${pod.emoji} ${podName}\n\n${podDescription}\n\n${getTranslation('select_service', userLang)}`,
                         { reply_markup: inlineKeyboard }
@@ -516,21 +516,30 @@ bot.on('message', async (msg) => {
 
         // Handle language selection
         if (['🇺🇸 English', '🇪🇹 አማርኛ', '🇪🇹 Afaan Oromo'].includes(text)) {
-            const langMap = { '🇺🇸 English': 'en', '🇪ᇹ አማርኛ': 'am', '🇪ᇹ Afaan Oromo': 'om' };
+            const langMap = {
+                '🇺🇸 English': 'en',
+                '🇪🇹 አማርኛ': 'am',
+                '🇪🇹 Afaan Oromo': 'om'
+            };
+
             const selectedLang = langMap[text];
-            setUserLanguage(chatId, selectedLang);
-            await bot.sendMessage(chatId, getTranslation('language_changed', selectedLang));
-            const keyboard = createMainMenuKeyboard(selectedLang);
-            return await bot.sendMessage(chatId, getTranslation('main_menu', selectedLang), { reply_markup: keyboard });
+            if (selectedLang) {
+                setUserLanguage(chatId, selectedLang);
+                await bot.sendMessage(chatId, getTranslation('language_changed', selectedLang));
+
+                const keyboard = createMainMenuKeyboard(selectedLang);
+                return await bot.sendMessage(chatId, getTranslation('main_menu', selectedLang), {
+                    reply_markup: keyboard
+                });
+            }
         }
 
         // Handle main menu options
         if (text === getTranslation('menu_services', userLang)) {
-            const keyboard = createServicePodsKeyboard(userLang);
-            return await bot.sendMessage(chatId,
-                getTranslation('service_pods_title', userLang),
-                { reply_markup: keyboard }
-            );
+            const keyboard = createServicesKeyboard(userLang);
+            return await bot.sendMessage(chatId, getTranslation('services_title', userLang), {
+                reply_markup: keyboard
+            });
         }
 
         // Handle service pod button clicks from main keyboard
@@ -545,7 +554,7 @@ bot.on('message', async (msg) => {
                     if (podServices.length > 0) {
                         const inlineKeyboard = createInlineServiceKeyboard(podServices, userLang);
                         const podDescription = getTranslation(`pod${podKey.replace('pod', '')}_description`, userLang);
-                        
+
                         await bot.sendMessage(chatId,
                             `${pod.emoji} ${podName}\n\n${podDescription}\n\n${getTranslation('select_service', userLang)}`,
                             { reply_markup: inlineKeyboard }
@@ -607,11 +616,34 @@ bot.on('message', async (msg) => {
             return;
         }
 
-        if (text === '🌐 Language') {
+        if (text === getTranslation('menu_language', userLang)) {
             const keyboard = createLanguageKeyboard();
-            return await bot.sendMessage(chatId, getTranslation('select_language', userLang), { reply_markup: keyboard });
+            return await bot.sendMessage(chatId, getTranslation('language_selection', 'en'), {
+                reply_markup: keyboard
+            });
         }
 
+        if (text === getTranslation('menu_faq', userLang)) {
+            const faqText = getTranslation('faq_general_content', userLang);
+            await bot.sendMessage(chatId, faqText);
+            setTimeout(() => {
+                const keyboard = createMainMenuKeyboard(userLang);
+                bot.sendMessage(chatId, getTranslation('main_menu', userLang), { reply_markup: keyboard });
+            }, 3000);
+            return;
+        }
+
+        if (text === getTranslation('menu_contact', userLang)) {
+            const contactText = getTranslation('contact_info', userLang);
+            await bot.sendMessage(chatId, contactText);
+            setTimeout(() => {
+                const keyboard = createMainMenuKeyboard(userLang);
+                bot.sendMessage(chatId, getTranslation('main_menu', userLang), { reply_markup: keyboard });
+            }, 3000);
+            return;
+        }
+
+        // Handle back to menu
         if (text === getTranslation('back_to_menu', userLang)) {
             const keyboard = createMainMenuKeyboard(userLang);
             return await bot.sendMessage(chatId, getTranslation('main_menu', userLang), { reply_markup: keyboard });
@@ -788,7 +820,7 @@ bot.on('message', async (msg) => {
                     const serviceBreakdown = Object.entries(stats.serviceBreakdown)
                         .map(([service, count]) => `${service}: ${count}`)
                         .join('\n');
-                    
+
                     const statsMessage = getTranslation('admin_statistics_summary', userLang)
                         .replace('{totalUsers}', stats.totalUsers)
                         .replace('{totalApplications}', stats.totalApplications)
@@ -796,7 +828,7 @@ bot.on('message', async (msg) => {
                         .replace('{approved}', stats.approved)
                         .replace('{rejected}', stats.rejected)
                         .replace('{serviceBreakdown}', serviceBreakdown);
-                    
+
                     await bot.sendMessage(chatId, statsMessage);
                     return;
                 }
@@ -885,7 +917,7 @@ bot.on('message', async (msg) => {
                     if (application) {
                         setAdminStep(chatId, 'application_details');
                         setAdminData(chatId, { trackingNumber: application.trackingNumber });
-                        
+
                         const appDetails = getTranslation('admin_application_details', userLang)
                             .replace('{trackingNumber}', application.trackingNumber)
                             .replace('{service}', application.service)
@@ -897,7 +929,7 @@ bot.on('message', async (msg) => {
                             .replace('{address}', application.formData?.address || 'N/A')
                             .replace('{documentCount}', application.documents?.length || 0)
                             .replace('{notes}', application.notes || 'No notes');
-                        
+
                         const keyboard = createAdminActionsKeyboard(userLang);
                         await bot.sendMessage(chatId, appDetails, { reply_markup: keyboard });
                     } else {
@@ -909,7 +941,7 @@ bot.on('message', async (msg) => {
 
             if (adminStep === 'application_details') {
                 const adminData = getAdminData(chatId);
-                
+
                 if (text === '✅ Approve') {
                     const result = await adminService.updateApplicationStatus(adminData.trackingNumber, 'approved');
                     if (result.success) {
@@ -983,7 +1015,7 @@ bot.on('message', async (msg) => {
             if (adminStep === 'broadcast') {
                 const users = await adminService.getAllUsers();
                 let sentCount = 0;
-                
+
                 for (const user of users) {
                     try {
                         await bot.sendMessage(user.chatId, `📢 ${text}`);
@@ -992,7 +1024,7 @@ bot.on('message', async (msg) => {
                         console.error(`Failed to send to user ${user.chatId}:`, error);
                     }
                 }
-                
+
                 await bot.sendMessage(chatId, getTranslation('admin_broadcast_sent', userLang).replace('{count}', sentCount));
                 setAdminStep(chatId, 'dashboard');
                 const keyboard = createAdminDashboardKeyboard(userLang);

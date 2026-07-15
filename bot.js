@@ -697,9 +697,12 @@ bot.on('message', async (msg) => {
                         await bot.sendMessage(chatId, serviceInfo);
 
                         setTimeout(() => {
-                            applicationService.startApplication(chatId, userLang);
-                            applicationService.setService(chatId, serviceKey.replace('service_', ''));
-                            bot.sendMessage(chatId, getTranslation('application_full_name', userLang));
+                            const result = applicationService.startApplication(chatId, userLang, serviceKey.replace('service_', ''));
+                            if (result.success) {
+                                bot.sendMessage(chatId, result.firstPrompt);
+                            } else {
+                                bot.sendMessage(chatId, '❌ Failed to start application. Please try again.');
+                            }
                         }, 3000);
                         return;
                     }

@@ -649,6 +649,64 @@ bot.on('message', async (msg) => {
             return await bot.sendMessage(chatId, getTranslation('main_menu', userLang), { reply_markup: keyboard });
         }
 
+        // Handle individual services - matching exact website services
+        const serviceHandlers = {
+            // Core services from the website
+            'service_national_id': ['🆔 National ID', 'National ID'],
+            'service_passport': ['🛂 Passport', 'Passport'],
+            'service_vital_registration': ['📋 Vital Registration', 'Vital Registration'],
+            'service_civil_status': ['📋 Civil Status', 'Civil Status'],
+            'service_business_licensing': ['🏢 Business Licensing', 'Business Licensing'],
+            'service_cooperatives': ['🤝 Cooperatives & Enterprises', 'Cooperatives'],
+            'service_revenue': ['💰 Revenue Collection', 'Revenue Services'],
+            'service_land': ['🏞️ Land Services', 'Land Services'],
+            'service_investment': ['💼 Investment Services', 'Investment'],
+            'service_document_auth': ['📋 Document Authentication', 'Document Auth'],
+            'service_transport': ['🚛 Transport & Traffic', 'Transport'],
+            'service_construction': ['🏗️ Construction & Design', 'Construction'],
+            'service_sanitation': ['🌿 Sanitation & Municipal', 'Sanitation'],
+            'service_social': ['👥 Social Affairs', 'Social Services'],
+            'service_urban_planning': ['🏗️ Urban Planning', 'Urban Planning'],
+            'service_elections': ['🗳️ Elections', 'Elections']
+        };
+
+        // Check if the user clicked on any service
+        for (const [serviceKey, serviceNames] of Object.entries(serviceHandlers)) {
+            for (const serviceName of serviceNames) {
+                if (text === serviceName) {
+                    // Check if user is registered
+                    const user = await database.getUser(chatId);
+                    const isVerified = user && user.personalInfo && user.personalInfo.phoneVerified;
+
+                    if (!isVerified) {
+                        // Show service info then prompt registration
+                        const serviceInfo = getTranslation(serviceKey + '_info', userLang) ||
+                            `📋 ${getTranslation(serviceKey, userLang)}\n\n✅ Processing Time: 3-5 days\n💰 Fee: Contact MESOB office\n📄 Required documents will be specified during application.\n\n🏢 Visit MESOB office with required documents.`;
+
+                        await bot.sendMessage(chatId, serviceInfo);
+
+                        setTimeout(() => {
+                            bot.sendMessage(chatId, getTranslation('registration_prompt', userLang));
+                        }, 3000);
+                        return;
+                    } else {
+                        // User is registered - show service info and start application
+                        const serviceInfo = getTranslation(serviceKey + '_info', userLang) ||
+                            `📋 ${getTranslation(serviceKey, userLang)}\n\n✅ Processing Time: 3-5 days\n💰 Fee: Contact MESOB office\n📄 Required documents will be specified during application.\n\n🏢 Visit MESOB office with required documents.`;
+
+                        await bot.sendMessage(chatId, serviceInfo);
+
+                        setTimeout(() => {
+                            applicationService.startApplication(chatId, userLang);
+                            applicationService.setService(chatId, serviceKey.replace('service_', ''));
+                            bot.sendMessage(chatId, getTranslation('application_full_name', userLang));
+                        }, 3000);
+                        return;
+                    }
+                }
+            }
+        }
+
         // Handle phone number input (registration)
         if (/^\d{9,15}$/.test(text.replace(/[^0-9]/g, ''))) {
             const phoneNumber = smsService.formatPhoneNumber(text);

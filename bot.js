@@ -32,7 +32,14 @@ if (process.env.NODE_EXTRA_CA_CERTS && fs.existsSync(process.env.NODE_EXTRA_CA_C
 }
 
 // Create bot with custom agent
-const botOptions = { polling: false };
+const botOptions = {
+    polling: {
+        interval: 300,
+        params: {
+            timeout: 10
+        }
+    }
+};
 if (httpsAgent) {
     botOptions.request = { agent: httpsAgent };
 }
@@ -52,6 +59,7 @@ const {
 const {
     createMainMenuKeyboard, createServicesKeyboard,
     createLanguageKeyboard, createAdminDashboardKeyboard,
+    createCoordinatorDashboardKeyboard,
     createServicePodsKeyboard, createInlineServiceKeyboard,
     createAdminApplicationsKeyboard, createAdminActionsKeyboard
 } = require('./src/utils/keyboards');
@@ -490,12 +498,21 @@ bot.on('message', async (msg) => {
                     return;
 
                 case '/help':
-                    const helpText = `🤖 MESOB Bot Help\n\n` +
+                    let helpText = `🤖 MESOB Bot Help\n\n` +
                         `📋 Available Commands:\n` +
                         `/start - Start the bot\n` +
                         `/help - Show this help\n` +
-                        `/menu - Main menu\n\n` +
-                        `🎯 Features:\n` +
+                        `/menu - Main menu\n` +
+                        `/language - Change language\n` +
+                        `/status - Check your registration status\n` +
+                        `/cancel - Cancel current operation\n` +
+                        `/admin - Access admin dashboard\n`;
+
+                    if (isAdmin(chatId)) {
+                        helpText += `/admins - List all administrators\n`;
+                    }
+
+                    helpText += `\n🎯 Features:\n` +
                         `• 12 Service Pods with 130+ services\n` +
                         `• Application tracking\n` +
                         `• Multilingual support\n` +
@@ -507,6 +524,58 @@ bot.on('message', async (msg) => {
                 case '/menu':
                     const menuKeyboard = createMainMenuKeyboard(userLang);
                     return await bot.sendMessage(chatId, '🏠 Main Menu', { reply_markup: menuKeyboard });
+
+                case '/language':
+                    const languageKeyboard = createLanguageKeyboard();
+                    return await bot.sendMessage(chatId,
+                        '🌐 Select your preferred language:\n\nምርጫ ቋንቋ ይምረጡ:\n\nAfaan keessan filaa:',
+                        { reply_markup: languageKeyboard }
+                    );
+
+                case '/status':
+                    const user = await database.getUser(chatId);
+                    const isRegistered = user && user.personalInfo && user.personalInfo.phoneVerified;
+                    const statusMessage = isRegistered
+                        ? `✅ Registered\n👤 Name: ${user.personalInfo.fullName}\n📱 Phone: ${user.personalInfo.phoneNumber}`
+                        : '❌ Not registered. Send /start to register.';
+                    return await bot.sendMessage(chatId, `📊 Your Status:\n\n${statusMessage}`);
+
+                case '/cancel':
+                    // Clear any ongoing processes
+                    setRegistrationStep(chatId, null);
+                    clearRegistrationData(chatId);
+                    if (applicationService.hasActiveApplication(chatId)) {
+                        applicationService.cancelApplication(chatId);
+                    }
+                    const cancelKeyboard = createMainMenuKeyboard(userLang);
+                    return await bot.sendMessage(chatId,
+                        '❌ Operation cancelled. Returning to main menu.',
+                        { reply_markup: cancelKeyboard }
+                    );
+
+                case '/admin':
+                    if (isAdmin(chatId)) {
+                        const keyboard = createAdminDashboardKeyboard(userLang);
+                        return await bot.sendMessage(chatId, getTranslation('admin_dashboard', userLang), { reply_markup: keyboard });
+                    } else {
+                        return await bot.sendMessage(chatId, getTranslation('admin_login_prompt', userLang));
+                    }
+
+                case '/admins':
+                    if (isAdmin(chatId)) {
+                        const adminList = adminService.admins;
+                        let adminInfo = '👥 MESOB Administrators:\n\n';
+                        let count = 1;
+                        for (const [email, admin] of adminList) {
+                            adminInfo += `${count}. ${admin.name}\n   📧 ${email}\n   🏷️ Role: ${admin.role}\n\n`;
+                            count++;
+                        }
+                        adminInfo += '🔐 Login Format: email:password\n';
+                        adminInfo += '💡 Example: admin@mesob.gov.et:admin123';
+                        return await bot.sendMessage(chatId, adminInfo);
+                    } else {
+                        return await bot.sendMessage(chatId, '❌ Access denied. Admin privileges required.');
+                    }
 
                 default:
                     await bot.sendMessage(chatId, "❓ Unknown command. Type /help to see available commands.");
@@ -882,9 +951,24 @@ bot.on('message', async (msg) => {
                 if (authResult.success) {
                     setAdminStatus(chatId, true);
                     setAdminStep(chatId, 'dashboard');
+
+                    // Store admin email for role-specific features
+                    const adminData = adminService.admins.get(email.trim());
+                    setAdminData(chatId, { email: email.trim(), role: adminData.role });
+
                     await bot.sendMessage(chatId, getTranslation('admin_login_success', userLang));
-                    const keyboard = createAdminDashboardKeyboard(userLang);
-                    return await bot.sendMessage(chatId, getTranslation('admin_dashboard', userLang), { reply_markup: keyboard });
+
+                    // Choose dashboard based on role
+                    if (adminData.role === 'coordinator') {
+                        const keyboard = createCoordinatorDashboardKeyboard(userLang);
+                        const welcomeMsg = `🎯 Welcome ${adminData.name}!\n\n` +
+                            `📋 Your Services: ${adminData.services.join(', ')}\n\n` +
+                            `Select an option from your coordinator dashboard:`;
+                        return await bot.sendMessage(chatId, welcomeMsg, { reply_markup: keyboard });
+                    } else {
+                        const keyboard = createAdminDashboardKeyboard(userLang);
+                        return await bot.sendMessage(chatId, getTranslation('admin_dashboard', userLang), { reply_markup: keyboard });
+                    }
                 } else {
                     return await bot.sendMessage(chatId, getTranslation('admin_login_failed', userLang));
                 }
@@ -919,6 +1003,25 @@ bot.on('message', async (msg) => {
                             `${index + 1}. ${user.personalInfo?.fullName || 'Unknown'} - ${user.personalInfo?.phoneNumber || 'No phone'}`
                         ).join('\n');
                         await bot.sendMessage(chatId, `👥 Recent Users:\n\n${userList}`);
+                    }
+                    return;
+                }
+
+                // Management-only feature: View all coordinators
+                if (text === '👥 View Coordinators') {
+                    const adminData = getAdminData(chatId);
+                    if (adminData && ['super_admin', 'director', 'manager', 'supervisor'].includes(adminData.role)) {
+                        const coordinators = adminService.getAllCoordinators();
+                        if (coordinators.length === 0) {
+                            await bot.sendMessage(chatId, '👥 No coordinators found.');
+                        } else {
+                            const coordList = coordinators.map((coord, index) =>
+                                `${index + 1}. ${coord.name}\n   📧 ${coord.email}\n   🏛️ Services: ${coord.services.join(', ')}`
+                            ).join('\n\n');
+                            await bot.sendMessage(chatId, `👥 All Service Coordinators:\n\n${coordList}`);
+                        }
+                    } else {
+                        await bot.sendMessage(chatId, '❌ Access denied. Management privileges required.');
                     }
                     return;
                 }
@@ -963,6 +1066,138 @@ bot.on('message', async (msg) => {
                     clearAdminSession(chatId);
                     const keyboard = createMainMenuKeyboard(userLang);
                     return await bot.sendMessage(chatId, '👋 Logged out successfully!', { reply_markup: keyboard });
+                }
+
+                // Handle coordinator-specific dashboard options
+                const adminData = getAdminData(chatId);
+                if (adminData && adminData.role === 'coordinator') {
+                    if (text === '📋 My Services Applications') {
+                        const applications = await adminService.getCoordinatorApplications(adminData.email);
+                        if (applications.length === 0) {
+                            await bot.sendMessage(chatId, '📋 No applications found for your services.');
+                        } else {
+                            const appList = applications.slice(0, 15).map((app, index) =>
+                                `${index + 1}. ${app.trackingNumber} - ${app.service} (${app.status})`
+                            ).join('\n');
+                            await bot.sendMessage(chatId, `📋 Your Services Applications:\n\n${appList}`);
+                        }
+                        return;
+                    }
+
+                    if (text === '📊 My Services Statistics') {
+                        const stats = await adminService.getCoordinatorStatistics(adminData.email);
+                        if (stats) {
+                            const serviceList = stats.services.join(', ');
+                            const breakdown = Object.entries(stats.serviceBreakdown)
+                                .map(([service, count]) => `• ${service}: ${count}`)
+                                .join('\n');
+
+                            const statsMsg = `📊 ${stats.coordinator} Statistics\n\n` +
+                                `🏛️ Services: ${serviceList}\n` +
+                                `📋 Total Applications: ${stats.totalApplications}\n` +
+                                `⏳ Pending: ${stats.pending}\n` +
+                                `✅ Approved: ${stats.approved}\n` +
+                                `❌ Rejected: ${stats.rejected}\n\n` +
+                                `📈 Service Breakdown:\n${breakdown || 'No applications yet'}`;
+
+                            await bot.sendMessage(chatId, statsMsg);
+                        } else {
+                            await bot.sendMessage(chatId, '❌ Could not load statistics.');
+                        }
+                        return;
+                    }
+
+                    if (text === '⏳ Pending Applications') {
+                        const applications = await adminService.getCoordinatorApplications(adminData.email);
+                        const pending = applications.filter(app => app.status === 'submitted');
+                        if (pending.length === 0) {
+                            await bot.sendMessage(chatId, '⏳ No pending applications for your services.');
+                        } else {
+                            const appList = pending.map((app, index) =>
+                                `${index + 1}. ${app.trackingNumber} - ${app.service}\n   👤 ${app.formData?.fullName || 'Unknown'}`
+                            ).join('\n\n');
+                            await bot.sendMessage(chatId, `⏳ Pending Applications:\n\n${appList}`);
+                        }
+                        return;
+                    }
+
+                    if (text === '✅ Approved Applications') {
+                        const applications = await adminService.getCoordinatorApplications(adminData.email);
+                        const approved = applications.filter(app => app.status === 'approved');
+                        if (approved.length === 0) {
+                            await bot.sendMessage(chatId, '✅ No approved applications for your services.');
+                        } else {
+                            const appList = approved.slice(0, 10).map((app, index) =>
+                                `${index + 1}. ${app.trackingNumber} - ${app.service}`
+                            ).join('\n');
+                            await bot.sendMessage(chatId, `✅ Approved Applications:\n\n${appList}`);
+                        }
+                        return;
+                    }
+
+                    if (text === '❌ Rejected Applications') {
+                        const applications = await adminService.getCoordinatorApplications(adminData.email);
+                        const rejected = applications.filter(app => app.status === 'rejected');
+                        if (rejected.length === 0) {
+                            await bot.sendMessage(chatId, '❌ No rejected applications for your services.');
+                        } else {
+                            const appList = rejected.slice(0, 10).map((app, index) =>
+                                `${index + 1}. ${app.trackingNumber} - ${app.service}`
+                            ).join('\n');
+                            await bot.sendMessage(chatId, `❌ Rejected Applications:\n\n${appList}`);
+                        }
+                        return;
+                    }
+
+                    if (text === '📞 Contact Support') {
+                        const adminData = getAdminData(chatId);
+                        const admin = adminService.admins.get(adminData.email);
+
+                        const supportMsg = `📞 MESOB Support Information\n\n` +
+                            `👤 Your Role: ${admin.name}\n` +
+                            `🏛️ Your Services: ${admin.services.join(', ')}\n\n` +
+                            `🚨 Emergency Support:\n` +
+                            `📱 Phone: +251 913 116898\n` +
+                            `📧 Email: support@mesob.gov.et\n\n` +
+                            `👨‍💼 Management Contacts:\n` +
+                            `🎖️ Director: director@mesob.gov.et\n` +
+                            `📊 Operations Manager: manager@mesob.gov.et\n` +
+                            `👮 Supervisor: supervisor@mesob.gov.et\n\n` +
+                            `🔧 Technical Support:\n` +
+                            `💻 IT Helpdesk: tech@mesob.gov.et\n` +
+                            `🌐 Website: mesobshashe.gov.et\n\n` +
+                            `⏰ Support Hours: Mon-Fri 8:00-17:00`;
+
+                        await bot.sendMessage(chatId, supportMsg);
+                        return;
+                    }
+
+                    if (text === '📈 Performance Report') {
+                        const stats = await adminService.getCoordinatorStatistics(adminData.email);
+                        if (stats) {
+                            const approvalRate = stats.totalApplications > 0
+                                ? ((stats.approved / stats.totalApplications) * 100).toFixed(1)
+                                : '0';
+                            const rejectionRate = stats.totalApplications > 0
+                                ? ((stats.rejected / stats.totalApplications) * 100).toFixed(1)
+                                : '0';
+
+                            const reportMsg = `📈 Performance Report\n` +
+                                `👤 Coordinator: ${stats.coordinator}\n\n` +
+                                `📊 Overall Performance:\n` +
+                                `• Total Applications: ${stats.totalApplications}\n` +
+                                `• Approval Rate: ${approvalRate}%\n` +
+                                `• Rejection Rate: ${rejectionRate}%\n` +
+                                `• Pending Applications: ${stats.pending}\n\n` +
+                                `🎯 Services Managed: ${stats.services.length}\n` +
+                                `📋 Service List: ${stats.services.join(', ')}`;
+
+                            await bot.sendMessage(chatId, reportMsg);
+                        } else {
+                            await bot.sendMessage(chatId, '❌ Could not generate performance report.');
+                        }
+                        return;
+                    }
                 }
             }
 
@@ -1169,10 +1404,6 @@ bot.getMe().then((botInfo) => {
     console.log('🏛️ Service Pods: 12 (130+ services)');
     console.log('🚀 Ready to serve MESOB users!');
     console.log('📝 Send /start to begin interaction');
-
-    // Start polling after successful connection
-    return bot.startPolling();
-}).then(() => {
     console.log('✅ Bot is running! Send /start to your bot to test it.');
 }).catch((error) => {
     console.error('❌ Failed to start bot:', error.message);

@@ -246,6 +246,39 @@ function createAdminDashboardKeyboard(userLang) {
 }
 
 /**
+ * Create coordinator dashboard keyboard
+ */
+function createCoordinatorDashboardKeyboard(userLang) {
+    const { getTranslation } = require('../config/languages');
+
+    return {
+        keyboard: [
+            [
+                { text: '📋 My Services Applications' },
+                { text: '📊 My Services Statistics' }
+            ],
+            [
+                { text: '⏳ Pending Applications' },
+                { text: '✅ Approved Applications' }
+            ],
+            [
+                { text: '❌ Rejected Applications' },
+                { text: '🔍 Search My Services' }
+            ],
+            [
+                { text: '📈 Performance Report' },
+                { text: '📞 Contact Support' }
+            ],
+            [
+                { text: getTranslation('admin_logout', userLang) }
+            ]
+        ],
+        resize_keyboard: true,
+        one_time_keyboard: false
+    };
+}
+
+/**
  * Create admin applications keyboard
  */
 function createAdminApplicationsKeyboard(userLang) {
@@ -297,6 +330,7 @@ module.exports = {
     createServicesKeyboard,
     createLanguageKeyboard,
     createAdminDashboardKeyboard,
+    createCoordinatorDashboardKeyboard,
     createServicePodsKeyboard,
     createInlineServiceKeyboard,
     createInlineLanguageKeyboard,
